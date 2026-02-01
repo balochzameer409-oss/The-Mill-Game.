@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>9 گوٹیوں والا گیم</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: #187eea; /* پیلا پس منظر */
+            color: #fff; /* سیاہ ٹیکسٹ */
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            padding: 8px 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            height: 50px;
+            background: #682eea;}
+        
+        .title {
+            font-size: 1.7rem;
+            color: gold;/* نیلا رنگ */
+            text-shadow: 2px 2px 1px rgba(55, 15, 0, 1);
+            text-align: center;
+            flex: 1;
+            font-weight: bold;
+        }
+        
+        .menu-btn {
+            background: #665eea;
+            border: 2px solid gold;
+            color: #fff; /* پیلا ٹیکسٹ */
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-weight: bold;
+            width: 45px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .menu-btn:hover {
+            background: #000  ;
+        }
+        
+        .game-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 5px;
+            overflow: hidden;
+            height: calc(100vh - 50px);
+        }
+        
+        .game-status {
+            background: #667eea;            padding: 5px 10px;
+            border-radius: 8px;
+            margin: 3px 0;
+            text-align: center;
+            border: 1px solid gold;
+            font-size: 0.9rem;
+            width: 95%;
+            max-width: 400px;
+            color: #fff;
+            font-weight: bold;
+        }
+        
+        .pieces-count {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 95%;
+            max-width: 400px;
+            margin: 5px 0;
+            gap: 10px;
+        }
+        
+        .player-piece-info {
+            flex: 1;
+            position: relative;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 5px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            min-height: 60px;
+        }
+        
+        .player1-piece {
+            background: rgba(255, 51, 51, 0.9); /* سرخ پس منظر */
+            border-color: #cc0000;
+            color: white;
+        }
+        
+        .player2-piece {
+            background: rgba(51, 51, 255, 0.9); /* نیلا پس منظر */
+            border-color: #0000cc;
+            color: white;
+        }
+        
+        .player-piece-info.active {
+            border-color: gold;
+            box-shadow: 0 0 15px rgba(26, 42, 108, 0.8);
+        }
+        
+        .piece-count {
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .piece-label {
+            font-size: 0.7rem;
+            margin-top: 2px;
+        }
+        
+        .game-board-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 5px;
+        }
+        
+        .game-board {
+            position: relative;
+            width: 95vw;
+            height: 95vw;
+            max-width: 350px;
+            max-height: 350px;
+            background-color: #deb887; /* براﺅن بورڈ */
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            padding: 14%;
+            border: 3px solid #1a2a6c; /* نیلا بارڈر */
+        }
+        
+        .board-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .square {
+            position: absolute;
+            border: 2px solid #000;
+        }
+        
+        .outer-square {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .middle-square {
+            width: 66.67%;
+            height: 66.67%;
+            top: 16.67%;
+            left: 16.67%;
+        }
+        
+        .inner-square {
+            width: 33.33%;
+            height: 33.33%;
+            top: 33.33%;
+            left: 33.33%;
+        }
+        
+        .connecting-line {
+            position: absolute;
+            background-color: #000;
+        }
+        
+        .line-top {
+            width: 2px;
+            height: 33.33%;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .line-bottom {
+            width: 2px;
+            height: 33.33%;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .line-left {
+            height: 2px;
+            width: 33.33%;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+        
+        .line-right {
+            height: 2px;
+            width: 33.33%;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+        }
+        
+        .point {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: #333;
+            border: 2px solid #000;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            transition: all 0.2s;
+        }
+        
+        .point:hover {
+            background-color: #555;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+        
+        .piece {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+            transition: transform 0.2s;
+        }
+        
+        .piece:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        
+        .player1 {
+            background: radial-gradient(circle at 30% 30%, #ff3333, #cc0000);
+            border: 2px solid #ff6116;
+            color: #fff;
+        }
+        
+        .player2 {
+            background: radial-gradient(circle at 30% 30%, #3333ff, #0000cc);
+            border: 2px solid #6666ff;
+            color: #fff;
+        }
+        
+        .selected {
+            border: 2px solid #1a2a6c !important;
+            box-shadow: 0 0 10px #1a2a6c !important;
+        }
+        
+        .movable-point {
+            background-color: #00ff00 !important;
+            border: 2px solid #00cc00 !important;
+            animation: pulseMove 1s infinite;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        @keyframes pulseMove {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.3); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        .removable {
+            animation: pulseRemove 1s infinite;
+            border: 2px solid #ff0000 !important;
+            cursor: pointer !important;
+            box-shadow: 0 0 15px #ff0000 !important;
+        }
+        
+        @keyframes pulseRemove {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        .stats-panel {
+            background: rgba(26, 42, 108, 0.2); /* نیلا پس منظر */
+            border-radius: 8px;
+            padding: 8px;
+            margin: 5px 0;
+            border: 2px solid gold;
+            width: 95%;
+            max-width: 400px;
+        }
+
+        .stats-title {
+            text-align: center;
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            padding-bottom: 3px;
+            border-bottom: 1px solid gold;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            text-align: center;
+        }
+
+        .history-item {
+            background: greenyellow;
+            padding: 5px 3px;
+            border-radius: 5px;
+        }
+
+        .history-label {
+            font-size: 0.6rem;
+            color: #1a2a6c;
+            margin-bottom: 2px;
+        }
+
+        .history-value {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #1a2a6c;
+        }
+
+        .reset-stats-btn {
+            width: 100%;
+            margin-top: 5px;
+            background: linear-gradient(135deg, #ff3333, #cc0000);
+            color: white;
+            padding: 6px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.7rem;
+            border: 1px solid #ff6666;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #1a2a6c; /* نیلا پس منظر */
+            color: #FFD700; /* پیلا ٹیکسٹ */
+            padding: 10px 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s;
+            max-width: 250px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
+            border: 2px solid #FFD700;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 215, 0, 0.9); /* پیلا پس منظر */
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: #1a2a6c; /* نیلا پس منظر */
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 90%;
+            width: 300px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border: 2px solid #FFD700; /* پیلا بارڈر */
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #FFD700;
+            padding-bottom: 8px;
+        }
+        
+        .modal-title {
+            font-size: 1.1rem;
+            color: #FFD700; /* پیلا ٹیکسٹ */
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #FFD700;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            margin: 0;
+            line-height: 1;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .menu-item {
+            padding: 12px;
+            margin: 8px 0;
+            background: rgba(255, 215, 0, 0.1); /* ہلکا پیلا پس منظر */
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid transparent;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #FFD700;
+        }
+        
+        .menu-item i {
+            font-size: 1.1rem;
+            color: #FFD700;
+            width: 25px;
+            text-align: center;
+        }
+        
+        .menu-item-text {
+            flex: 1;
+        }
+        
+        .menu-item-title {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 2px;
+        }
+        
+        .menu-item-desc {
+            font-size: 0.7rem;
+            color: rgba(255, 215, 0, 0.8);
+        }
+        
+        .guide-section {
+            margin-bottom: 15px;
+        }
+        
+        .guide-title {
+            color: #FFD700;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            padding-bottom: 3px;
+        }
+        
+        .guide-text {
+            line-height: 1.4;
+            margin-bottom: 8px;
+            font-size: 0.8rem;
+            color: white;
+        }
+        
+        .rules-list {
+            padding-right: 15px;
+            margin: 10px 0;
+        }
+        
+        .rules-list li {
+            margin-bottom: 8px;
+            position: relative;
+            font-size: 0.75rem;
+            color: white;
+        }
+        
+        .rules-list li:before {
+            content: "•";
+            color: #FFD700;
+            position: absolute;
+            right: -12px;
+        }
+        
+        .celebration-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 215, 0, 0.95); /* پیلا پس منظر */
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .celebration-content {
+            background: #1a2a6c; /* نیلا پس منظر */
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 90%;
+            width: 280px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #FFD700;
+        }
+        
+        .celebration-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #FFD700;
+        }
+        
+        .celebration-title {
+            font-size: 1.5rem;
+            color: #FFD700;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .celebration-message {
+            font-size: 1rem;
+            color: white;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .celebration-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .celebration-btn {
+            background: #FFD700; /* پیلا پس منظر */
+            color: #1a2a6c; /* نیلا ٹیکسٹ */
+            border: 2px solid #1a2a6c;
+            padding: 10px 15px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .celebration-btn:hover {
+            transform: translateY(-2px);
+            background: #ffed4e;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #FFD700;
+            animation: confettiFall 3s linear infinite;
+        }
+        
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @media (max-width: 350px) {
+            .game-board {
+                max-width: 300px;
+                max-height: 300px;
+            }
+            
+            .piece {
+                width: 22px;
+                height: 22px;
+                font-size: 12px;
+            }
+            
+            .point {
+                width: 14px;
+                height: 14px;
+            }
+            
+            .player-piece-info {
+                min-height: 55px;
+                padding: 5px 3px;
+            }
+            
+            .piece-count {
+                font-size: 1.1rem;
+            }
+            
+            .piece-label {
+                font-size: 0.6rem;
+            }
+        }
+        
+        @media (max-height: 600px) {
+            .game-board {
+                max-width: 280px;
+                max-height: 280px;
+            }
+            
+            .header {
+                height: 45px;
+            }
+            
+            .title {
+                font-size: 1rem;
+            }
+            
+            .game-status {
+                font-size: 0.8rem;
+                padding: 3px 8px;
+            }
+            
+            .stats-panel {
+                padding: 5px;
+            }
+            
+            .history-value {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Celebration Modal -->
+    <div class="celebration-modal" id="celebrationModal">
+        <div class="celebration-content">
+            <div class="celebration-icon">🏆</div>
+            <div class="celebration-title">مبارک ہو!</div>
+            <div class="celebration-message" id="winnerMessage">کھلاڑی 1 جیت گیا!</div>
+            <div class="celebration-buttons">
+                <button class="celebration-btn" onclick="playAgain()">
+                    <i class="fas fa-redo"></i> دوبارہ
+                </button>
+                <button class="celebration-btn" onclick="closeCelebration()">
+                    <i class="fas fa-times"></i> بند
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="header">
+        <button class="menu-btn" id="menuBtn" title="مینیو">
+            ⋮
+        </button>
+        <div class="title">The Mill Game</div>
+    </div>
+    
+    <div class="game-container">
+        <div class="game-status">
+            <div class="phase-indicator" id="phaseIndicator">مرحلہ: گوٹیاں رکھنا</div>
+        </div>
+        
+        <div class="pieces-count">
+            <div class="player-piece-info player1-piece active" id="player1-info">
+                <div class="piece-count" id="p1-count">9</div>
+                <div class="piece-label">کھلاڑی 1</div>
+            </div>
+            
+            <div class="player-piece-info player2-piece" id="player2-info">
+                <div class="piece-count" id="p2-count">9</div>
+                <div class="piece-label">کھلاڑی 2</div>
+            </div>
+        </div>
+        
+        <div class="game-board-container">
+            <div class="game-board">
+                <div class="board-inner">
+                    <div class="square outer-square"></div>
+                    <div class="square middle-square"></div>
+                    <div class="square inner-square"></div>
+                    
+                    <div class="connecting-line line-top"></div>
+                    <div class="connecting-line line-bottom"></div>
+                    <div class="connecting-line line-left"></div>
+                    <div class="connecting-line line-right"></div>
+                    
+                    <div class="point" data-pos="0" style="left: 0%; top: 0%;"></div>
+                    <div class="point" data-pos="1" style="left: 50%; top: 0%;"></div>
+                    <div class="point" data-pos="2" style="left: 100%; top: 0%;"></div>
+                    <div class="point" data-pos="3" style="left: 16.67%; top: 16.67%;"></div>
+                    <div class="point" data-pos="4" style="left: 50%; top: 16.67%;"></div>
+                    <div class="point" data-pos="5" style="left: 83.33%; top: 16.67%;"></div>
+                    <div class="point" data-pos="6" style="left: 33.33%; top: 33.33%;"></div>
+                    <div class="point" data-pos="7" style="left: 50%; top: 33.33%;"></div>
+                    <div class="point" data-pos="8" style="left: 66.67%; top: 33.33%;"></div>
+                    <div class="point" data-pos="9" style="left: 0%; top: 50%;"></div>
+                    <div class="point" data-pos="10" style="left: 16.67%; top: 50%;"></div>
+                    <div class="point" data-pos="11" style="left: 33.33%; top: 50%;"></div>
+                    <div class="point" data-pos="12" style="left: 66.67%; top: 50%;"></div>
+                    <div class="point" data-pos="13" style="left: 83.33%; top: 50%;"></div>
+                    <div class="point" data-pos="14" style="left: 100%; top: 50%;"></div>
+                    <div class="point" data-pos="15" style="left: 33.33%; top: 66.67%;"></div>
+                    <div class="point" data-pos="16" style="left: 50%; top: 66.67%;"></div>
+                    <div class="point" data-pos="17" style="left: 66.67%; top: 66.67%;"></div>
+                    <div class="point" data-pos="18" style="left: 16.67%; top: 83.33%;"></div>
+                    <div class="point" data-pos="19" style="left: 50%; top: 83.33%;"></div>
+                    <div class="point" data-pos="20" style="left: 83.33%; top: 83.33%;"></div>
+                    <div class="point" data-pos="21" style="left: 0%; top: 100%;"></div>
+                    <div class="point" data-pos="22" style="left: 50%; top: 100%;"></div>
+                    <div class="point" data-pos="23" style="left: 100%; top: 100%;"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats-panel">
+            <div class="stats-title">🏆 ریکارڈ</div>
+            <div class="history-grid">
+                <div class="history-item">
+                    <div class="history-label">کھلاڑی 1</div>
+                    <div class="history-value" id="p1-wins">0</div>
+                </div>
+                
+                <div class="history-item">
+                    <div class="history-label">کل گیمز</div>
+                    <div class="history-value" id="total-games">0</div>
+                </div>
+                
+                <div class="history-item">
+                    <div class="history-label">کھلاڑی 2</div>
+                    <div class="history-value" id="p2-wins">0</div>
+                </div>
+            </div>
+            
+            <button class="reset-stats-btn" onclick="resetAllStats()">
+                <i class="fas fa-trash"></i> صاف کریں
+            </button>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <div class="modal" id="menuModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">مینیو</div>
+                <button class="close-modal" id="closeMenuBtn">×</button>
+            </div>
+            
+            <div class="menu-item" onclick="toggleSoundFromMenu()">
+                <i class="fas fa-volume-up" id="soundIcon"></i>
+                <div class="menu-item-text">
+                    <div class="menu-item-title" id="soundTitle">آواز</div>
+                    <div class="menu-item-desc">آن/آف کریں</div>
+                </div>
+            </div>
+            
+            <div class="menu-item" onclick="showGuide()">
+                <i class="fas fa-book"></i>
+                <div class="menu-item-text">
+                    <div class="menu-item-title">ہدایات</div>
+                    <div class="menu-item-desc">کھیلنے کا طریقہ</div>
+                </div>
+            </div>
+            
+            <div class="menu-item" onclick="resetGame()">
+                <i class="fas fa-redo"></i>
+                <div class="menu-item-text">
+                    <div class="menu-item-title">نئی گیم</div>
+                    <div class="menu-item-desc">دوبارہ شروع</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="guideModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">ہدایات</div>
+                <button class="close-modal" id="closeGuideBtn">×</button>
+            </div>
+            
+            <div class="guide-section">
+                <div class="guide-text">
+                    دو کھلاڑیوں والا پرانا گیم
+                </div>
+                
+                <ul class="rules-list">
+                    <li>ہر کھلاڑی کے پاس 9 گوٹیاں</li>
+                    <li>پہلے گوٹیاں بورڈ پر رکھیں</li>
+                    <li>تین گوٹیاں لائن میں = مِل</li>
+                    <li>مِل بنانے والا مخالف کی گوٹی ہٹا سکتا ہے</li>
+                    <li>پھر اپنی گوٹی ایک پوائنٹ آگے بڑھائیں</li>
+                    <li>صرف سیدھی لائن پر حرکت کریں</li>
+                    <li>جب کسی کے پاس 3 گوٹیاں رہ جائیں تو وہ کسی بھی خالی پوائنٹ پر جا سکتا ہے</li>
+                    <li>2 گوٹیاں رہنے پر ہار جائیں</li>
+                </ul>
+            </div>
+            
+            <div class="guide-section">
+                <div class="guide-title">کنٹرولز</div>
+                <div class="guide-text">
+                    • پوائنٹس پر کلک کریں (گوٹیاں رکھنے کے لیے)<br>
+                    • گوٹی پر کلک کریں (منتخب کرنے کے لیے)<br>
+                    • پوائنٹس پر کلک کریں (گوٹی منتقل کرنے کے لیے)
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameHistory = JSON.parse(localStorage.getItem('gameHistory')) || {
+            player1Wins: 0,
+            player2Wins: 0,
+            totalGames: 0
+        };
+
+        function updateHistoryDisplay() {
+            document.getElementById('p1-wins').textContent = gameHistory.player1Wins;
+            document.getElementById('p2-wins').textContent = gameHistory.player2Wins;
+            document.getElementById('total-games').textContent = gameHistory.totalGames;
+        }
+
+        function resetAllStats() {
+            if (confirm('تمام اعداد و شمار صاف کریں؟')) {
+                gameHistory = {
+                    player1Wins: 0,
+                    player2Wins: 0,
+                    totalGames: 0
+                };
+                localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
+                updateHistoryDisplay();
+                showNotification('اعداد و شمار صاف ہوگئے!', 'success');
+                playSound('click');
+            }
+        }
+
+        function saveGameResult(winner) {
+            if (winner === 1) {
+                gameHistory.player1Wins++;
+            } else {
+                gameHistory.player2Wins++;
+            }
+            gameHistory.totalGames++;
+            localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
+            updateHistoryDisplay();
+        }
+
+        const audio = {
+            place: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
+            move: new Audio('https://cdn.freesound.org/previews/251/251431_4486188-lq.mp3'),
+            remove: new Audio('https://cdn.freesound.org/previews/270/270333_5123851-lq.mp3'),
+            mill: new Audio('https://cdn.freesound.org/previews/320/320655_5260872-lq.mp3'),
+            win: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'),
+            error: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'),
+            click: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3')
+        };
+
+        let soundEnabled = true;
+        
+        function playSound(soundName) {
+            if (!soundEnabled) return;
+            try {
+                const sound = audio[soundName];
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play();
+                }
+            } catch (e) {
+                console.log("آواز چلانے میں مسئلہ:", e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            updateSoundUI();
+            if (soundEnabled) {
+                showNotification('آواز چالو', 'success');
+                playSound('click');
+            } else {
+                showNotification('آواز بند', 'warning');
+            }
+        }
+        
+        function toggleSoundFromMenu() {
+            toggleSound();
+        }
+        
+        function updateSoundUI() {
+            const icon = document.getElementById('soundIcon');
+            const title = document.getElementById('soundTitle');
+            
+            if (soundEnabled) {
+                icon.className = 'fas fa-volume-up';
+                title.textContent = 'آواز آن';
+            } else {
+                icon.className = 'fas fa-volume-mute';
+                title.textContent = 'آواز آف';
+            }
+        }
+
+        function showNotification(message, type = '') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = 'notification';
+            
+            if (type) {
+                notification.classList.add(type);
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+        }
+
+        function openMenu() {
+            document.getElementById('menuModal').style.display = 'flex';
+            updateSoundUI();
+            playSound('click');
+        }
+
+        function closeMenu() {
+            document.getElementById('menuModal').style.display = 'none';
+            playSound('click');
+        }
+
+        function showGuide() {
+            closeMenu();
+            document.getElementById('guideModal').style.display = 'flex';
+            playSound('click');
+        }
+
+        function closeGuide() {
+            document.getElementById('guideModal').style.display = 'none';
+            playSound('click');
+        }
+
+        document.getElementById('menuBtn').onclick = openMenu;
+        document.getElementById('closeMenuBtn').onclick = closeMenu;
+        document.getElementById('closeGuideBtn').onclick = closeGuide;
+
+        window.onclick = (event) => {
+            if (event.target === document.getElementById('menuModal')) {
+                closeMenu();
+            }
+            if (event.target === document.getElementById('guideModal')) {
+                closeGuide();
+            }
+        };
+
+        const board = Array(24).fill(null);
+        let currentPlayer = 1;
+        let phase = 'placing';
+        let piecesLeft = {1: 9, 2: 9};
+        let selectedPos = null;
+        let removingMode = false;
+        
+        const directConnections = {
+            0: [1, 9],
+            1: [0, 2, 4],
+            2: [1, 14],
+            3: [4, 10],
+            4: [1, 3, 5, 7],
+            5: [4, 13],
+            6: [7, 11],
+            7: [4, 6, 8],
+            8: [7, 12],
+            9: [0, 10, 21],
+            10: [3, 9, 11, 18],
+            11: [6, 10, 15],
+            12: [8, 13, 17],
+            13: [5, 12, 14, 20],
+            14: [2, 13, 23],
+            15: [11, 16],
+            16: [15, 17, 19],
+            17: [12, 16],
+            18: [10, 19],
+            19: [16, 18, 20, 22],
+            20: [13, 19],
+            21: [9, 22],
+            22: [19, 21, 23],
+            23: [14, 22]
+        };
+        
+        const mills = [
+            [0,1,2], [3,4,5], [6,7,8], [9,10,11], [12,13,14], [15,16,17], [18,19,20], [21,22,23],
+            [0,9,21], [3,10,18], [6,11,15], [1,4,7], [16,19,22], [8,12,17], [5,13,20], [2,14,23]
+        ];
+
+        function init() {
+            document.querySelectorAll('.point').forEach(pt => {
+                pt.onclick = () => handlePointClick(parseInt(pt.dataset.pos));
+            });
+            updatePhaseIndicator();
+            updateHistoryDisplay();
+        }
+
+        function handlePointClick(pos) {
+            playSound('click');
+            
+            if (phase === 'placing') {
+                handlePlacingPhase(pos);
+            } else if (phase === 'moving') {
+                handleMovingPointClick(pos);
+            } else if (phase === 'removing') {
+                showNotification('پہلے مخالف کی گوٹی ہٹائیں', 'warning');
+            }
+        }
+
+        function handlePieceClick(pos) {
+            playSound('click');
+            
+            if (phase === 'moving') {
+                if (selectedPos === null) {
+                    if (board[pos] === currentPlayer) {
+                        selectedPos = pos;
+                        highlightPiece(pos);
+                        highlightMovablePoints(pos);
+                        showNotification('گوٹی منتخب ہوگئی', '');
+                    } else {
+                        showNotification('صرف اپنی گوٹی منتخب کریں', 'error');
+                    }
+                } else if (selectedPos === pos) {
+                    unhighlightPiece(selectedPos);
+                    clearMovablePoints();
+                    selectedPos = null;
+                } else if (board[pos] === currentPlayer) {
+                    unhighlightPiece(selectedPos);
+                    clearMovablePoints();
+                    selectedPos = pos;
+                    highlightPiece(pos);
+                    highlightMovablePoints(pos);
+                }
+            } else if (phase === 'removing' && removingMode) {
+                handleRemovingPhase(pos);
+            }
+        }
+
+        function handlePlacingPhase(pos) {
+            if (board[pos] === null) {
+                board[pos] = currentPlayer;
+                piecesLeft[currentPlayer]--;
+                drawPiece(pos, currentPlayer);
+                playSound('place');
+                
+                if (checkMill(pos)) {
+                    phase = 'removing';
+                    removingMode = true;
+                    highlightRemovablePieces();
+                    updatePhaseIndicator();
+                    showNotification(`مِل بنایا!`, 'success');
+                    playSound('mill');
+                } else {
+                    if (piecesLeft[1] === 0 && piecesLeft[2] === 0) {
+                        phase = 'moving';
+                        updatePhaseIndicator();
+                    }
+                    switchPlayer();
+                }
+                updateUI();
+            } else {
+                showNotification('پہلے سے بھرا ہوا!', 'error');
+                playSound('error');
+            }
+        }
+
+        function handleMovingPointClick(pos) {
+            if (selectedPos === null) {
+                showNotification('پہلے گوٹی منتخب کریں', 'warning');
+                playSound('error');
+                return;
+            }
+            
+            const currentPlayerPieces = board.filter(p => p === currentPlayer).length;
+            const canFly = currentPlayerPieces === 3;
+            
+            // اگر صرف 3 گوٹیاں ہیں تو کسی بھی خالی پوائنٹ پر جا سکتا ہے
+            if (canFly) {
+                if (board[pos] === null) {
+                    board[pos] = board[selectedPos];
+                    board[selectedPos] = null;
+                    movePiece(selectedPos, pos);
+                    clearMovablePoints();
+                    unhighlightPiece(selectedPos);
+                    playSound('move');
+                    
+                    if (checkMill(pos)) {
+                        phase = 'removing';
+                        removingMode = true;
+                        highlightRemovablePieces();
+                        updatePhaseIndicator();
+                        showNotification(`مِل بنایا!`, 'success');
+                        playSound('mill');
+                    } else {
+                        switchPlayer();
+                    }
+                    
+                    selectedPos = null;
+                    updateUI();
+                    return;
+                } else {
+                    showNotification('پہلے سے بھرا ہوا!', 'error');
+                    clearMovablePoints();
+                    unhighlightPiece(selectedPos);
+                    selectedPos = null;
+                    playSound('error');
+                    return;
+                }
+            }
+            
+            // نارمل موومنٹ (صرف سیدھی لائن میں)
+            if (board[pos] === null && directConnections[selectedPos]?.includes(pos)) {
+                board[pos] = board[selectedPos];
+                board[selectedPos] = null;
+                movePiece(selectedPos, pos);
+                clearMovablePoints();
+                unhighlightPiece(selectedPos);
+                playSound('move');
+                
+                if (checkMill(pos)) {
+                    phase = 'removing';
+                    removingMode = true;
+                    highlightRemovablePieces();
+                    updatePhaseIndicator();
+                    showNotification(`مِل بنایا!`, 'success');
+                    playSound('mill');
+                } else {
+                    switchPlayer();
+                }
+                
+                selectedPos = null;
+                updateUI();
+            } else if (board[pos] !== null) {
+                showNotification('پہلے سے بھرا ہوا!', 'error');
+                clearMovablePoints();
+                unhighlightPiece(selectedPos);
+                selectedPos = null;
+                playSound('error');
+            } else {
+                showNotification('سیدھی لائن پر نہیں!', 'error');
+                clearMovablePoints();
+                unhighlightPiece(selectedPos);
+                selectedPos = null;
+                playSound('error');
+            }
+        }
+
+        function handleRemovingPhase(pos) {
+            const opponent = currentPlayer === 1 ? 2 : 1;
+            
+            if (board[pos] === opponent) {
+                const allOpponentPieces = [];
+                for (let i = 0; i < 24; i++) {
+                    if (board[i] === opponent) {
+                        allOpponentPieces.push(i);
+                    }
+                }
+                
+                const allInMills = allOpponentPieces.every(p => isInMill(p));
+                
+                if (allInMills || !isInMill(pos)) {
+                    board[pos] = null;
+                    removePieceWithAnimation(pos);
+                    clearRemovableHighlights();
+                    playSound('remove');
+                    showNotification(`مخالف کی گوٹی ہٹائی!`, 'success');
+                    
+                    const opponentPieces = board.filter(p => p === opponent).length;
+                    if (opponentPieces <= 2) {
+                        phase = 'gameover';
+                        removingMode = false;
+                        saveGameResult(currentPlayer);
+                        showCelebration(currentPlayer);
+                        playSound('win');
+                        return;
+                    }
+                    
+                    const currentPlayerPieces = board.filter(p => p === currentPlayer).length;
+                    phase = (piecesLeft[1] === 0 && piecesLeft[2] === 0) ? 'moving' : 'placing';
+                    removingMode = false;
+                    updatePhaseIndicator();
+                    switchPlayer();
+                    updateUI();
+                    
+                    // اگر صرف 3 گوٹیاں ہیں تو بتائیں
+                    if (currentPlayerPieces === 3) {
+                        showNotification('آپ کی صرف 3 گوٹیاں ہیں! آپ کسی بھی خالی پوائنٹ پر جا سکتے ہیں', 'info');
+                    }
+                } else {
+                    showNotification('یہ گوٹی لائن میں ہے!', 'error');
+                    playSound('error');
+                }
+            } else if (board[pos] === currentPlayer) {
+                showNotification('اپنی گوٹی نہیں ہٹا سکتے!', 'error');
+                playSound('error');
+            } else {
+                showNotification('یہاں کوئی گوٹی نہیں!', 'error');
+                playSound('error');
+            }
+        }
+
+        function checkMill(pos) {
+            const player = board[pos];
+            return mills.some(mill => 
+                mill.includes(pos) && mill.every(p => board[p] === player)
+            );
+        }
+
+        function isInMill(pos) {
+            return checkMill(pos);
+        }
+
+        function drawPiece(pos, player) {
+            const point = document.querySelector(`[data-pos="${pos}"]`);
+            const piece = document.createElement('div');
+            piece.className = `piece player${player}`;
+            piece.dataset.pos = pos;
+            piece.textContent = player === 1 ? '١' : '٢';
+            piece.style.left = point.style.left;
+            piece.style.top = point.style.top;
+            
+            piece.onclick = (e) => {
+                e.stopPropagation();
+                handlePieceClick(pos);
+            };
+            
+            document.querySelector('.board-inner').appendChild(piece);
+        }
+
+        function movePiece(from, to) {
+            const piece = document.querySelector(`.piece[data-pos="${from}"]`);
+            const point = document.querySelector(`[data-pos="${to}"]`);
+            piece.style.left = point.style.left;
+            piece.style.top = point.style.top;
+            piece.dataset.pos = to;
+            
+            piece.onclick = (e) => {
+                e.stopPropagation();
+                handlePieceClick(to);
+            };
+        }
+
+        function removePieceWithAnimation(pos) {
+            const piece = document.querySelector(`.piece[data-pos="${pos}"]`);
+            if (piece) {
+                piece.style.transition = 'all 0.3s ease-in-out';
+                piece.style.transform = 'translate(-50%, -50%) scale(0)';
+                piece.style.opacity = '0';
+                setTimeout(() => {
+                    if (piece.parentNode) {
+                        piece.parentNode.removeChild(piece);
+                    }
+                }, 300);
+            }
+        }
+
+        function highlightMovablePoints(pos) {
+            const connectedPoints = directConnections[pos] || [];
+            const currentPlayerPieces = board.filter(p => p === currentPlayer).length;
+            const canFly = currentPlayerPieces === 3;
+            
+            if (canFly) {
+                // صرف 3 گوٹیاں ہیں، تو تمام خالی پوائنٹس دکھائیں
+                for (let i = 0; i < 24; i++) {
+                    if (board[i] === null) {
+                        const pointElement = document.querySelector(`.point[data-pos="${i}"]`);
+                        if (pointElement) {
+                            pointElement.classList.add('movable-point');
+                        }
+                    }
+                }
+                showNotification('آپ کی صرف 3 گوٹیاں ہیں! کسی بھی خالی پوائنٹ پر جا سکتے ہیں', 'info');
+            } else {
+                // نارمل کناکشنز
+                connectedPoints.forEach(point => {
+                    if (board[point] === null) {
+                        const pointElement = document.querySelector(`.point[data-pos="${point}"]`);
+                        if (pointElement) {
+                            pointElement.classList.add('movable-point');
+                        }
+                    }
+                });
+            }
+        }
+
+        function clearMovablePoints() {
+            document.querySelectorAll('.point').forEach(point => {
+                point.classList.remove('movable-point');
+            });
+        }
+
+        function highlightRemovablePieces() {
+            const opponent = currentPlayer === 1 ? 2 : 1;
+            let opponentPieces = [];
+            
+            for (let i = 0; i < 24; i++) {
+                if (board[i] === opponent) {
+                    opponentPieces.push(i);
+                }
+            }
+            
+            const allInMills = opponentPieces.every(p => isInMill(p));
+            
+            opponentPieces.forEach(pos => {
+                const piece = document.querySelector(`.piece[data-pos="${pos}"]`);
+                if (piece) {
+                    if (allInMills || !isInMill(pos)) {
+                        piece.classList.add('removable');
+                    }
+                }
+            });
+        }
+
+        function clearRemovableHighlights() {
+            document.querySelectorAll('.piece').forEach(piece => {
+                piece.classList.remove('removable');
+                piece.classList.remove('selected');
+            });
+        }
+
+        function highlightPiece(pos) {
+            const piece = document.querySelector(`.piece[data-pos="${pos}"]`);
+            if (piece) {
+                piece.classList.add('selected');
+            }
+        }
+
+        function unhighlightPiece(pos) {
+            const piece = document.querySelector(`.piece[data-pos="${pos}"]`);
+            if (piece) {
+                piece.classList.remove('selected');
+            }
+        }
+
+        function switchPlayer() {
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            updatePhaseIndicator();
+            
+            // نئے پلیئر کے لیے اگر اس کی 3 گوٹیاں ہیں تو بتائیں
+            const currentPlayerPieces = board.filter(p => p === currentPlayer).length;
+            if (phase === 'moving' && currentPlayerPieces === 3) {
+                showNotification('آپ کی صرف 3 گوٹیاں ہیں! آپ کسی بھی خالی پوائنٹ پر جا سکتے ہیں', 'info');
+            }
+        }
+
+        function updatePhaseIndicator() {
+            document.getElementById('player1-info').classList.remove('active');
+            document.getElementById('player2-info').classList.remove('active');
+            
+            if (currentPlayer === 1) {
+                document.getElementById('player1-info').classList.add('active');
+            } else {
+                document.getElementById('player2-info').classList.add('active');
+            }
+            
+            let phaseText = '';
+            if (phase === 'placing') phaseText = 'مرحلہ: گوٹیاں رکھنا';
+            else if (phase === 'moving') {
+                const currentPlayerPieces = board.filter(p => p === currentPlayer).length;
+                if (currentPlayerPieces === 3) {
+                    phaseText = 'مرحلہ: گوٹیاں چلانا (3 گوٹیاں - کہیں بھی جا سکتے ہیں)';
+                } else {
+                    phaseText = 'مرحلہ: گوٹیاں چلانا';
+                }
+            }
+            else if (phase === 'removing') phaseText = 'مرحلہ: گوٹی ہٹانا';
+            else if (phase === 'gameover') phaseText = 'گیم ختم';
+            
+            document.getElementById('phaseIndicator').textContent = phaseText;
+        }
+
+        function updateUI() {
+            document.getElementById('p1-count').textContent = piecesLeft[1];
+            document.getElementById('p2-count').textContent = piecesLeft[2];
+        }
+
+        function showCelebration(winner) {
+            const modal = document.getElementById('celebrationModal');
+            const message = document.getElementById('winnerMessage');
+            message.textContent = `کھلاڑی ${winner} جیت گیا!`;
+            modal.style.display = 'flex';
+            createConfetti();
+        }
+
+        function createConfetti() {
+            const celebrationContent = document.querySelector('.celebration-content');
+            const colors = ['#FFD700', '#FFA500', '#FF6347', '#4CAF50', '#2196F3'];
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    celebrationContent.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 100);
+            }
+        }
+
+        function closeCelebration() {
+            document.getElementById('celebrationModal').style.display = 'none';
+            playSound('click');
+        }
+
+        function playAgain() {
+            closeCelebration();
+            resetGame();
+        }
+
+        function resetGame() {
+            playSound('click');
+            board.fill(null);
+            currentPlayer = 1;
+            phase = 'placing';
+            piecesLeft = {1: 9, 2: 9};
+            selectedPos = null;
+            removingMode = false;
+            document.querySelectorAll('.piece').forEach(p => p.remove());
+            clearMovablePoints();
+            clearRemovableHighlights();
+            updateUI();
+            updatePhaseIndicator();
+            closeMenu();
+            showNotification('نئی گیم شروع!', 'success');
+        }
+
+        init();
+    </script>
+    
+    <!-- Service Worker Registration for Offline Support -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(registration => {
+                        console.log('✅ Service Worker registered successfully');
+                        console.log('🎮 گیم اب offline چل سکتی ہے!');
+                    })
+                    .catch(error => {
+                        console.log('❌ Service Worker registration failed:', error);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
