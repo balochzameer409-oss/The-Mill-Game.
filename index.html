@@ -1,0 +1,3249 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <title>The Mill Game</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+    /* وائس کنٹرولز اسٹائلز */
+.voice-header-btn {
+    background: #665eea;
+    border: 2px solid gold;
+    color: #ffff00;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.voice-header-btn:hover {
+    background: #000;
+    transform: scale(1.1);
+}
+
+.voice-header-btn:active {
+    transform: scale(0.95);
+}
+
+.voice-header-btn.active {
+    background: #4CAF50;
+    border-color: #2E7D32;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+}
+    /* ===== LOADING & ERROR SCREENS ===== */
+#loadingScreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #187eea;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255,255,255,0.3);
+    border-top-color: gold;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+#loadingText {
+    color: white;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 1.2rem;
+}
+
+#errorScreen {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #dc3545;
+    color: white;
+    text-align: center;
+    padding: 50px 20px;
+    z-index: 10000;
+}
+
+#errorScreen h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+#errorScreen p {
+    font-size: 1.2rem;
+}
+
+#gameContent {
+    display: none;
+}
+iframe[src*="appsgeyser"] {
+    display: none !important;
+}  
+* { margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            background: #187eea;
+            color: #fff;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            padding: 8px 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            height: 50px;
+            background: #682eea;}
+        
+        .title {
+            font-size: 1.6rem;
+            color: gold;
+            text-shadow: 2px 2px 1px rgba(55, 15, 0, 1);
+            text-align: center;
+            flex: 1;
+            font-weight: bold;
+        }
+        
+        
+        
+         .stats-panel {
+     background: rgba(26, 42, 108, 0.25);
+     border-radius: 6px;
+     padding: 4px 6px 5px;
+     margin: 2px 0 1px;
+     border: 1px solid gold;
+     width: 95%;
+     max-width: 400px;
+     flex-shrink: 0;
+ }
+ 
+ .stats-title {
+     text-align: center;
+     color: #fff;
+     font-size: 0.55rem;
+     font-weight: bold;
+     margin-bottom: 4px;
+     padding-bottom: 2px;
+     border-bottom: 1px solid rgba(255,215,0,0.5);
+ }
+ 
+ .history-grid {
+     display: grid;
+     grid-template-columns: repeat(3, 1fr);
+     gap: 4px;
+     text-align: center;
+ }
+ 
+ .history-item {
+     background: greenyellow;
+     padding: 3px 2px;
+     border-radius: 4px;
+ }
+ 
+ .history-label {
+     font-size: 0.55rem;
+     color: #1a2a6c;
+     margin-bottom: 1px;
+ }
+ 
+ .history-value {
+     font-size: 0.85rem;
+     font-weight: bold;
+     color: #1a2a6c;
+ }
+ 
+ .reset-stats-btn {
+     width: 100%;
+     margin-top: 5px;
+     background: linear-gradient(135deg, #ff3333, #cc0000);
+     color: white;
+     padding: 6px;
+     border: none;
+     border-radius: 5px;
+     cursor: pointer;
+     font-weight: bold;
+     font-size: 0.7rem;
+     border: 1px solid #ff6666;
+ }
+
+
+
+
+        .menu-btn {
+            background: #665eea;
+            border: 2px solid gold;
+            color: #fff; /* پیلا ٹیکسٹ */
+            font-size: 1.1rem;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-weight: bold;
+            width: 45px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .menu-btn:hover {
+            background: #000  ;
+        }
+        
+        .game-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2px;
+            overflow: hidden;
+            height: calc(90vh - 50px);
+        }
+        
+        .game-status {
+            background: #667eea;
+            padding: 4px 10px;
+            border-radius: 8px;
+            margin: 1px 0;
+            text-align: center;
+            border: 1px solid gold;
+            font-size: 0.85rem;
+            width: 95%;
+            max-width: 400px;
+            color: #fff;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .pieces-count {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 95%;
+            max-width: 400px;
+            margin: 2px 0;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+        
+        .player-piece-info {
+            flex: 1;
+            position: relative;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 5px 4px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            min-height: 50px;
+        }
+        
+        .player1-piece {
+            background: rgba(255, 51, 51, 0.9); /* سرخ پس منظر */
+            border-color: #cc0000;
+            color: white;
+        }
+        
+        .player2-piece {
+            background: rgba(51, 51, 255, 0.9); /* نیلا پس منظر */
+            border-color: #0000cc;
+            color: white;
+        }
+        
+        .player-piece-info.active {
+            border-color: gold;
+            box-shadow: 0 0 15px rgba(26, 42, 108, 0.8);
+        }
+        
+        .piece-count {
+            font-size: 0.5rem;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+        
+        .piece-label {
+            font-size: 0.8rem;
+            margin-top: 2px;
+        }
+        
+        .game-board-container {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 400px;
+            padding: 1px;
+            margin: 2px 0;
+        }
+        
+        .game-board {
+            position: relative;
+            width: 97vw;
+            height: 97vw;
+            max-width: 370px;
+            max-height: 370px;
+            background-color: #deb887;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            padding: 5%;
+            border: 3px solid #1a2a6c;
+        }
+        
+        .board-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .square {
+            position: absolute;
+            border: 2px solid #000;
+        }
+        
+        .outer-square {
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .middle-square {
+            width: 66.67%;
+            height: 66.67%;
+            top: 16.67%;
+            left: 16.67%;
+        }
+        
+        .inner-square {
+            width: 33.33%;
+            height: 33.33%;
+            top: 33.33%;
+            left: 33.33%;
+        }
+        
+        .connecting-line {
+            position: absolute;
+            background-color: #000;
+        }
+        
+        .line-top {
+            width: 2px;
+            height: 33.33%;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .line-bottom {
+            width: 2px;
+            height: 33.33%;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .line-left {
+            height: 2px;
+            width: 33.33%;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+        
+        .line-right {
+            height: 2px;
+            width: 33.33%;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+        }
+        
+        .point {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: #333;
+            border: 2px solid #000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            transition: all 0.2s;
+            z-index: 1;
+        }
+        
+        .point:hover {
+            background-color: #555;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+        
+        .point.movable-point {
+            background-color: #4CAF50;
+            border-color: #2E7D32;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.3); }
+        }
+        
+        .piece {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.2s;
+            z-index: 2;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .piece.player1 {
+            background-color: #ff3333;
+            border: 3px solid #cc0000;
+            color: white;
+        }
+        
+        .piece.player2 {
+            background-color: #3333ff;
+            border: 3px solid #0000cc;
+            color: white;
+        }
+        
+        .piece:hover {
+            transform: translate(-50%, -50%) scale(1.15);
+        }
+        
+        .piece.selected {
+            transform: translate(-50%, -50%) scale(1.2);
+            box-shadow: 0 0 0 3px gold;
+            animation: selectedPulse 0.5s infinite alternate;
+        }
+        
+        @keyframes selectedPulse {
+            from { box-shadow: 0 0 0 3px gold; }
+            to { box-shadow: 0 0 0 5px gold; }
+        }
+        
+        .piece.removable {
+            animation: shake 0.5s infinite;
+            border-color: #FFD700;
+            cursor: pointer;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translate(-50%, -50%) rotate(0deg); }
+            25% { transform: translate(-50%, -50%) rotate(-5deg); }
+            75% { transform: translate(-50%, -50%) rotate(5deg); }
+        }
+        
+        .menu-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .menu-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 90%;
+            width: 300px;
+        }
+        
+        .menu-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #FFD700;
+        }
+        
+        .menu-button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 1rem;
+            background-color: #FFD700;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        
+        .menu-button:hover {
+            background-color: #FFA500;
+            transform: scale(1.05);
+        }
+        
+        .celebration-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .celebration-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            position: relative;
+            max-width: 90%;
+            width: 350px;
+        }
+        
+        .winner-message {
+            font-size: 2rem;
+            color: #FFD700;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .celebration-emoji {
+            font-size: 4rem;
+            margin: 20px 0;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: #FFD700;
+            top: -10px;
+            animation: fall linear infinite;
+        }
+        
+        @keyframes fall {
+            to {
+                transform: translateY(400px) rotate(360deg);
+            }
+        }
+
+        /* ===== ہارنے والے کا Modal ===== */
+        .loser-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loser-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 35px 25px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+            border: 2px solid #e94560;
+            max-width: 90%;
+            width: 350px;
+            animation: shake-modal 0.5s ease;
+        }
+
+        @keyframes shake-modal {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-15px); }
+            40% { transform: translateX(15px); }
+            60% { transform: translateX(-10px); }
+            80% { transform: translateX(10px); }
+        }
+
+        .loser-emoji {
+            font-size: 4rem;
+            margin: 10px 0;
+            animation: fall-down 0.6s ease forwards;
+        }
+
+        @keyframes fall-down {
+            0% { transform: translateY(-30px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .loser-message {
+            font-size: 1.8rem;
+            color: #e94560;
+            margin: 15px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            font-weight: bold;
+        }
+
+        .loser-sub-message {
+            font-size: 1rem;
+            color: #a8a8b3;
+            margin-bottom: 20px;
+        }
+
+        .loser-btn {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .loser-btn.retry {
+            background: linear-gradient(135deg, #e94560, #c23152);
+            color: white;
+        }
+
+        .loser-btn.retry:hover {
+            background: linear-gradient(135deg, #ff5a7a, #e94560);
+            transform: scale(1.03);
+        }
+
+        .loser-btn.close {
+            background: #333;
+            color: #aaa;
+        }
+
+        .loser-btn.close:hover {
+            background: #444;
+            transform: scale(1.03);
+        }
+        
+        .notification {
+            position: fixed;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 3000;
+            display: none;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            max-width: 90%;
+            text-align: center;
+        }
+
+        /* ===== CREEPY: بھوت کی آنکھیں ===== */
+        .ghost-eyes {
+            position: fixed;
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-size: 3rem;
+            filter: drop-shadow(0 0 12px rgba(255, 50, 50, 1));
+            animation: eye-glow 1.5s infinite alternate;
+        }
+        .ghost-eyes.visible { opacity: 1; }
+
+        @keyframes eye-glow {
+            0% { filter: drop-shadow(0 0 8px rgba(255,50,50,0.8)); }
+            100% { filter: drop-shadow(0 0 20px rgba(255,80,80,1)); }
+        }
+
+        /* ===== CREEPY: خون کے چھلکے ===== */
+        .blood-splatter {
+            position: fixed;
+            z-index: 998;
+            pointer-events: none;
+            opacity: 0;
+            font-size: 1.8rem;
+            animation: blood-drip 1.2s ease forwards;
+        }
+
+        @keyframes blood-drip {
+            0%   { opacity: 0.9; transform: translateY(0) scale(1); }
+            60%  { opacity: 0.85; transform: translateY(30px) scale(1); }
+            100% { opacity: 0; transform: translateY(60px) scale(0.6); }
+        }
+
+        /* ===== CREEPY: پورا صفحہ اندھیرا ===== */
+        .dark-flash {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 997;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+        .dark-flash.active { opacity: 1; }
+
+        /* ===== CREEPY: خوف ناک نوٹیفکیشن ===== */
+        .creepy-notification {
+            position: fixed;
+            top: 65px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.8);
+            background: rgba(10, 0, 0, 0.95);
+            border: 2px solid #8b0000;
+            color: #cc2222;
+            padding: 12px 20px;
+            border-radius: 12px;
+            z-index: 3500;
+            display: none;
+            font-size: 0.95rem;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(139, 0, 0, 0.6), inset 0 0 20px rgba(139,0,0,0.15);
+            animation: creepy-appear 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            letter-spacing: 1px;
+            max-width: 90%;
+        }
+        .creepy-notification.visible {
+            display: block;
+        }
+
+        @keyframes creepy-appear {
+            0%   { transform: translateX(-50%) scale(0); opacity: 0; }
+            70%  { transform: translateX(-50%) scale(1.08); opacity: 1; }
+            100% { transform: translateX(-50%) scale(1); opacity: 1; }
+        }
+
+        /* ===== CREEPY: ہارنے والے کا بہتر موڈل ===== */
+        .loser-modal.creepy-active .loser-content {
+            border-color: #8b0000 !important;
+            box-shadow: 0 0 40px rgba(139,0,0,0.5), inset 0 0 30px rgba(139,0,0,0.1) !important;
+        }
+        .loser-modal.creepy-active .loser-emoji {
+            animation: shake-emoji 0.4s ease infinite alternate !important;
+        }
+        @keyframes shake-emoji {
+            0%   { transform: rotate(-8deg) scale(1); }
+            100% { transform: rotate(8deg) scale(1.1); }
+        }
+
+        /* ===== CREEPY: بورڈ کا سایہ جھلمل ===== */
+        .board-flicker {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.35) 100%);
+            z-index: 996;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .board-flicker.active { opacity: 1; }
+
+        /* ===== TAUNT: گوٹی مارنے کے بعد بٹنز ===== */
+        .taunt-popup {
+            display: none;
+            position: fixed;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border: 2px solid #e94560;
+            border-radius: 16px;
+            padding: 10px 12px;
+            z-index: 3100;
+            box-shadow: 0 -4px 20px rgba(233, 69, 96, 0.4);
+            animation: taunt-slide-up 0.35s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+            width: 95%;
+            max-width: 380px;
+        }
+        .taunt-popup.visible { display: block; }
+
+        @keyframes taunt-slide-up {
+            0%   { transform: translateX(-50%) translateY(100%); opacity: 0; }
+            100% { transform: translateX(-50%) translateY(0);    opacity: 1; }
+        }
+
+        .taunt-popup-title {
+            text-align: center;
+            color: #e94560;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .taunt-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+
+        .taunt-btn {
+            background: rgba(233, 69, 96, 0.15);
+            border: 1px solid rgba(233, 69, 96, 0.4);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 0.78rem;
+            padding: 8px 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s;
+            line-height: 1.25;
+        }
+        .taunt-btn:hover {
+            background: rgba(233, 69, 96, 0.35);
+            border-color: #e94560;
+            transform: scale(1.05);
+        }
+        .taunt-btn:active { transform: scale(0.95); }
+
+        .taunt-close-btn {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 4px;
+        }
+        .taunt-close-btn:hover { color: #aaa; }
+
+        /* ===== TAUNT: سامنے والے کا آنے والا میسج بیلون ===== */
+        .taunt-balloon {
+            display: none;
+            position: fixed;
+            top: 58px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.85);
+            background: linear-gradient(135deg, #fff5f5, #fff0f0);
+            border: 2px solid #e94560;
+            border-radius: 18px 18px 18px 4px;
+            padding: 10px 16px;
+            z-index: 3100;
+            box-shadow: 0 4px 18px rgba(233,69,96,0.35);
+            max-width: 85%;
+            width: 320px;
+            text-align: center;
+            animation: balloon-pop 0.4s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+        }
+        .taunt-balloon.visible { display: block; }
+
+        @keyframes balloon-pop {
+            0%   { transform: translateX(-50%) scale(0); opacity: 0; }
+            60%  { transform: translateX(-50%) scale(1.08); opacity: 1; }
+            100% { transform: translateX(-50%) scale(1); opacity: 1; }
+        }
+
+        .taunt-balloon-sender {
+            font-size: 0.7rem;
+            color: #e94560;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .taunt-balloon-text {
+            font-size: 1.05rem;
+            color: #222;
+            font-weight: bold;
+        }
+        
+        .notification.success {
+            background-color: rgba(76, 175, 80, 0.95);
+        }
+        
+        .notification.error {
+            background-color: rgba(244, 67, 54, 0.95);
+        }
+        
+        .notification.info {
+            background-color: rgba(33, 150, 243, 0.95);
+        }
+        
+        /* ===== Header کا Emoji بٹن ===== */
+        .emoji-header-btn {
+            background: #665eea;
+            border: 2px solid gold;
+            font-size: 1.3rem;
+            cursor: pointer;
+            border-radius: 8px;
+            width: 45px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .emoji-header-btn:hover {
+            background: #000;
+            transform: scale(1.1);
+        }
+        .emoji-header-btn:active { transform: scale(0.92); }
+
+        /* ===== مینیو میں آواز والا بٹن ===== */
+        .menu-sound-btn {
+            display: flex !important;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .menu-sound-btn.muted {
+            background-color: #555 !important;
+            color: #aaa !important;
+        }
+
+        /* ===== Emoji Panel پاپ اپ ===== */
+        .emoji-panel {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            border-top: 2px solid #e94560;
+            border-radius: 18px 18px 0 0;
+            padding: 12px 10px 10px;
+            z-index: 3200;
+            box-shadow: 0 -6px 24px rgba(0,0,0,0.45);
+            animation: panel-slide-up 0.3s cubic-bezier(0.175,0.885,0.32,1.275) forwards;
+        }
+        .emoji-panel.visible { display: block; }
+
+        @keyframes panel-slide-up {
+            0%   { transform: translateY(100%); opacity: 0; }
+            100% { transform: translateY(0);    opacity: 1; }
+        }
+
+        .emoji-panel-title {
+            text-align: center;
+            color: #e94560;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .emoji-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 4px;
+            justify-items: center;
+        }
+
+        .emoji-btn {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 8px;
+            font-size: 1.5rem;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .emoji-btn:hover {
+            background: rgba(233,69,96,0.25);
+            border-color: #e94560;
+            transform: scale(1.15);
+        }
+        .emoji-btn:active { transform: scale(0.9); }
+
+        .emoji-panel-close {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 0.75rem;
+            cursor: pointer;
+            padding: 3px;
+        }
+        .emoji-panel-close:hover { color: #aaa; }
+
+        /* Online Multiplayer Styles */
+        .lobby-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 2500;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .lobby-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+            max-width: 90%;
+            width: 400px;
+        }
+        
+        .lobby-title {
+            font-size: 1.8rem;
+            color: #FFD700;
+            margin-bottom: 20px;
+        }
+        
+        .lobby-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid #FFD700;
+            font-size: 1rem;
+            text-align: center;
+        }
+        
+        .lobby-button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background-color: #FFD700;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .lobby-button:hover {
+            background-color: #FFA500;
+            transform: scale(1.05);
+        }
+        
+        .lobby-button.secondary {
+            background-color: #666;
+            color: white;
+        }
+        
+        .lobby-button.secondary:hover {
+            background-color: #888;
+        }
+        
+        .game-code {
+            font-size: 2rem;
+            color: #FFD700;
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+        
+        .waiting-message {
+            font-size: 1.2rem;
+            color: white;
+            margin: 15px 0;
+        }
+        
+        .player-info-online {
+            font-size: 0.8rem;
+            color: #FFD700;
+            margin-top: 5px;
+        }
+        
+        .copy-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        .copy-button:hover {
+            background-color: #45a049;
+        }
+
+        .online-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .online-status.connected {
+            background-color: #4CAF50;
+            box-shadow: 0 0 5px #4CAF50;
+        }
+        
+        .online-status.disconnected {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+<body>
+   
+
+<!-- وائس آڈیو الیمنٹس -->
+<audio id="remoteAudio" autoplay style="display: none;"></audio>
+    <div id="loadingScreen">
+    <div class="spinner"></div>
+    <div id="loadingText">تصدیق ہو رہی ہے...</div>
+</div>
+<div id="errorScreen">
+    <h1>⛔ رسائی مسترد ⛔</h1>
+    <p>یہ صفحہ صرف اصل ایپ میں کام کرتا ہے</p>
+    <p style="margin-top: 20px; font-size: 0.9rem;">Access Denied - Unauthorized Domain</p>
+</div>
+
+<div id="gameContent">
+    <div class="header">
+        <button class="emoji-header-btn" id="emojiHeaderBtn" onclick="toggleEmojiPanel()">😄</button>
+        <div class="title">The Mill Game</div>
+        <button class="menu-btn" onclick="openMenu()">☰</button>
+    </div>
+<!--voice hataya-->
+ <!-- وائس چیٹ کنٹرولز -->
+ <div class="voice-controls" style="position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); z-index: 1000; background: rgba(26,42,108,0.9); padding: 10px; border-radius: 15px; border: 2px solid gold; display: none;" id="voiceControls">
+     <div style="display: flex; gap: 10px; align-items: center;">
+         <button id="micToggleBtn" style="background: #4CAF50; color: white; border: none; border-radius: 25%; width: 25px; height: 25px; font-size: 20px; cursor: pointer;">
+             <i class="fas fa-microphone"></i>
+         </button>
+         <button id="callToggleBtn" style="background: #2196F3; color: white; border: none; border-radius: 25%; width: 25px; height:20px; font-size: 20px; cursor: pointer;">
+             <i class="fas fa-phone"></i>
+         </button>
+         <div id="voiceStatus" style="color: white; font-size: 14px; min-width: 120px;">وائس بند ہے</div>
+     </div>
+ </div>
+ 
+ <button class="voice-header-btn" id="voiceHeaderBtn" onclick="toggleVoicePanel()" style="display: none;">
+     <i class="fas fa-microphone"></i>
+ </button>
+
+    <div class="game-container">
+        <div class="game-status" id="phaseIndicator">مرحلہ: گوٹیاں رکھنا</div>
+        
+
+        <!-- ===== ریکارڈ سیکشن — پیسز کاؤنٹ کے نیچے ===== -->
+        <div class="stats-panel">
+            <div class="stats-title">🏆 ریکارڈ</div>
+            <div class="history-grid">
+                <div class="history-item">
+                    <div class="history-label">کھلاڑی 1</div>
+                    <div class="history-value" id="p1-wins">0</div>
+                </div>
+                <div class="history-item">
+                    <div class="history-label">کل گیمز</div>
+                    <div class="history-value" id="total-games">0</div>
+                </div>
+                <div class="history-item">
+                    <div class="history-label">کھلاڑی 2</div>
+                    <div class="history-value" id="p2-wins">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="pieces-count">
+            <div class="player-piece-info player1-piece active" id="player1-info">
+                <div class="piece-count" id="p1-count">9</div>
+                <div class="piece-label">کھلاڑی ١</div>
+                <div class="player-info-online" id="p1-online"></div>
+            </div>
+            <div class="player-piece-info player2-piece" id="player2-info">
+                <div class="piece-count" id="p2-count">9</div>
+                <div class="piece-label">کھلاڑی ٢</div>
+                <div class="player-info-online" id="p2-online"></div>
+            </div>
+        </div>
+
+        <div class="game-board-container">
+            <div class="game-board">
+                <div class="board-inner">
+                    <div class="square outer-square"></div>
+                    <div class="square middle-square"></div>
+                    <div class="square inner-square"></div>
+                    
+                    <div class="connecting-line line-top"></div>
+                    <div class="connecting-line line-bottom"></div>
+                    <div class="connecting-line line-left"></div>
+                    <div class="connecting-line line-right"></div>
+                    
+                    <div class="point" data-pos="0" style="top: 0%; left: 0%;"></div>
+                    <div class="point" data-pos="1" style="top: 0%; left: 50%;"></div>
+                    <div class="point" data-pos="2" style="top: 0%; left: 100%;"></div>
+                    <div class="point" data-pos="3" style="top: 16.67%; left: 16.67%;"></div>
+                    <div class="point" data-pos="4" style="top: 16.67%; left: 50%;"></div>
+                    <div class="point" data-pos="5" style="top: 16.67%; left: 83.33%;"></div>
+                    <div class="point" data-pos="6" style="top: 33.33%; left: 33.33%;"></div>
+                    <div class="point" data-pos="7" style="top: 33.33%; left: 50%;"></div>
+                    <div class="point" data-pos="8" style="top: 33.33%; left: 66.67%;"></div>
+                    <div class="point" data-pos="9" style="top: 50%; left: 0%;"></div>
+                    <div class="point" data-pos="10" style="top: 50%; left: 16.67%;"></div>
+                    <div class="point" data-pos="11" style="top: 50%; left: 33.33%;"></div>
+                    <div class="point" data-pos="12" style="top: 50%; left: 66.67%;"></div>
+                    <div class="point" data-pos="13" style="top: 50%; left: 83.33%;"></div>
+                    <div class="point" data-pos="14" style="top: 50%; left: 100%;"></div>
+                    <div class="point" data-pos="15" style="top: 66.67%; left: 33.33%;"></div>
+                    <div class="point" data-pos="16" style="top: 66.67%; left: 50%;"></div>
+                    <div class="point" data-pos="17" style="top: 66.67%; left: 66.67%;"></div>
+                    <div class="point" data-pos="18" style="top: 83.33%; left: 16.67%;"></div>
+                    <div class="point" data-pos="19" style="top: 83.33%; left: 50%;"></div>
+                    <div class="point" data-pos="20" style="top: 83.33%; left: 83.33%;"></div>
+                    <div class="point" data-pos="21" style="top: 100%; left: 0%;"></div>
+                    <div class="point" data-pos="22" style="top: 100%; left: 50%;"></div>
+                    <div class="point" data-pos="23" style="top: 100%; left: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <!-- Lobby Modal -->
+    <div class="lobby-modal" id="lobbyModal">
+        <div class="lobby-content">
+            <div class="lobby-title">آن لائن گیم</div>
+            <div id="lobbyOptions">
+                <input type="text" class="lobby-input" id="playerName" placeholder="اپنا نام لکھیں" maxlength="15">
+                <button class="lobby-button" onclick="createGame()">نیا گیم بنائیں</button>
+                <button class="lobby-button" onclick="showJoinOptions()">گیم میں شامل ہوں</button>
+                <button class="lobby-button secondary" onclick="playOffline()">آف لائن کھیلیں</button>
+            </div>
+            <div id="createGameScreen" style="display: none;">
+                <div class="game-code" id="gameCode">----</div>
+                <button class="copy-button" onclick="copyGameCode()">کوڈ کاپی کریں</button>
+                <div class="waiting-message">دوسرے کھلاڑی کا انتظار...</div>
+                <button class="lobby-button secondary" onclick="cancelGame()">منسوخ کریں</button>
+            </div>
+            <div id="joinGameScreen" style="display: none;">
+                <input type="text" class="lobby-input" id="gameCodeInput" placeholder="گیم کوڈ لکھیں" maxlength="6">
+                <button class="lobby-button" onclick="joinGame()">شامل ہوں</button>
+                <button class="lobby-button secondary" onclick="backToLobby()">واپس</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Overlay -->
+    <div class="menu-overlay" id="menuOverlay">
+        <div class="menu-content">
+            <div class="menu-title">مینیو</div>
+            <button class="menu-button" onclick="resetGame()">نئی گیم</button>
+            <button class="menu-button" onclick="showRules()">قوانین</button>
+            <button class="menu-button" onclick="resetAllStats()">اعداد و شمار صاف کریں</button>
+            <button class="menu-button menu-sound-btn" id="menuSoundBtn" onclick="toggleSound()">
+                <i class="fas fa-volume-up" id="menuSoundIcon"></i>&nbsp; آواز چالو
+            </button>
+            <button class="menu-button" onclick="closeMenu()">بند کریں</button>
+        </div>
+    </div>
+
+    <!-- Celebration Modal -->
+    <div class="celebration-modal" id="celebrationModal" onclick="closeCelebration()">
+        <div class="celebration-content">
+            <div class="celebration-emoji">🏆</div>
+            <div class="winner-message" id="winnerMessage">جیت گئے!</div>
+            <button class="lobby-button" onclick="playAgain()">دوسری گیم کھیلیں</button>
+            <button class="lobby-button secondary" onclick="closeCelebration()">بند کریں</button>
+        </div>
+    </div>
+
+    <!-- Loser Modal (ہارنے والے کا میسج) -->
+    <div class="loser-modal" id="loserModal">
+        <div class="loser-content">
+            <div class="loser-emoji">😞</div>
+            <div class="loser-message" id="loserMessage">آپ ہار گئے!</div>
+            <div class="loser-sub-message" id="loserSubMessage"></div>
+            <button class="loser-btn retry" onclick="playAgain()">دوسری گیم کھیلیں</button>
+            <button class="loser-btn close" onclick="closeLoser()">بند کریں</button>
+        </div>
+    </div>
+
+    <!-- ===== CREEPY HTML ELEMENTS ===== -->
+    <div class="dark-flash" id="darkFlash"></div>
+    <div class="board-flicker" id="boardFlicker"></div>
+    <div class="ghost-eyes" id="ghostEyes">👀</div>
+    <div class="creepy-notification" id="creepyNotification"></div>
+
+    <!-- ===== TAUNT: گوٹی مارنے کے بعد پاپ اپ ===== -->
+    <div class="taunt-popup" id="tauntPopup">
+        <div class="taunt-popup-title">🔥 کیا بھیجنا ہے؟</div>
+        <div class="taunt-buttons" id="tauntButtons"></div>
+        <button class="taunt-close-btn" onclick="closeTauntPopup()">بند کریں ✕</button>
+    </div>
+
+    <!-- ===== TAUNT: سامنے والے کا آنے والا میسج ===== -->
+    <div class="taunt-balloon" id="tauntBalloon">
+        <div class="taunt-balloon-sender" id="tauntSender"></div>
+        <div class="taunt-balloon-text" id="tauntText"></div>
+    </div>
+</div>
+<!-- gameContent کا اختتام -->
+
+    <!-- ===== EMOJI PANEL: دل چاہے بھیجیں ===== -->
+    <div class="emoji-panel" id="emojiPanel">
+        <div class="emoji-panel-title">😄 ایموجی بھیجیں</div>
+        <div class="emoji-grid" id="emojiGrid"></div>
+        <button class="emoji-panel-close" onclick="toggleEmojiPanel()">بند کریں ✕</button>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCWHbfqbNI1rt09OLo2Nw3IufgQG5MU6vM",
+            authDomain: "mill-game-online.firebaseapp.com",
+            databaseURL: "https://mill-game-online-default-rtdb.firebaseio.com",
+            projectId: "mill-game-online",
+            storageBucket: "mill-game-online.firebasestorage.app",
+            messagingSenderId: "187128179484",
+            appId: "1:187128179484:web:7bbe1c553fd43ab634e8d9",
+            measurementId: "G-SQEQE6N44S"
+        };
+
+       // Initialize Firebase - WITH SECURITY CHECK
+let database = null;
+
+function initFirebase() {
+    // Security check کریں
+    if (!window.gameAuth || !window.gameAuth.isAuthorized()) {
+        console.error('Not authorized to use Firebase');
+        showError('غیر مجاز رسائی - Unauthorized Access');
+        return;
+    }
+    
+    // اب Firebase initialize کریں
+    firebase.initializeApp(firebaseConfig);
+    database = firebase.database();
+    
+    console.log('✅ Firebase initialized successfully');
+}
+
+// Game loaded ہونے پر Firebase initialize کریں
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        if (window.gameAuth && window.gameAuth.isAuthorized()) {
+            initFirebase();
+        }
+    }, 1500);
+});
+
+        // Game Variables
+        let board = Array(24).fill(null);
+        let currentPlayer = 1;
+        let phase = 'placing';
+        let piecesLeft = {1: 9, 2: 9};
+        let selectedPos = null;
+        let removingMode = false;
+        let gameWinner = null; // ✅ جیتنے والے کا نمبر سیف کریں
+        
+        // Game History
+        let gameHistory = JSON.parse(localStorage.getItem('gameHistory')) || {
+            player1Wins: 0,
+            player2Wins: 0,
+            totalGames: 0
+        };
+        
+        // نیا ساؤنڈ سسٹم
+        const audio = {
+            place: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
+            move: new Audio('https://cdn.freesound.org/previews/251/251431_4486188-lq.mp3'),
+            remove: new Audio('https://cdn.freesound.org/previews/270/270333_5123851-lq.mp3'),
+            mill: new Audio('https://cdn.freesound.org/previews/320/320655_5260872-lq.mp3'),
+            win: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'),
+            error: new Audio('https://assets.mixkit.co/active_storage/sfx/2003/2003-preview.mp3'),
+            click: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3')
+        };
+
+        let soundEnabled = true;
+        
+        // History Functions
+        function updateHistoryDisplay() {
+            document.getElementById('p1-wins').textContent = gameHistory.player1Wins;
+            document.getElementById('p2-wins').textContent = gameHistory.player2Wins;
+            document.getElementById('total-games').textContent = gameHistory.totalGames;
+        }
+
+        function resetAllStats() {
+            if (confirm('تمام اعداد و شمار صاف کریں؟')) {
+                gameHistory = {
+                    player1Wins: 0,
+                    player2Wins: 0,
+                    totalGames: 0
+                };
+                localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
+                updateHistoryDisplay();
+                showNotification('اعداد و شمار صاف ہوگئے!', 'success');
+                playSound('click');
+                closeMenu();
+            }
+        }
+
+        function saveGameResult(winner) {
+            if (winner === 1) {
+                gameHistory.player1Wins++;
+            } else {
+                gameHistory.player2Wins++;
+            }
+            gameHistory.totalGames++;
+            localStorage.setItem('gameHistory', JSON.stringify(gameHistory));
+            updateHistoryDisplay();
+        }
+        
+        function playSound(soundName) {
+            if (!soundEnabled) return;
+            try {
+                const sound = audio[soundName];
+                if (sound) {
+                    sound.currentTime = 0;
+                    sound.play();
+                }
+            } catch (e) {
+                console.log("آواز چلانے میں مسئلہ:", e);
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            updateSoundUI();
+            closeMenu(); // مینیو بند کریں بعد میں
+            if (soundEnabled) {
+                showNotification('آواز چالو ✅', 'success');
+                playSound('click');
+            } else {
+                showNotification('آواز بند 🔇', 'warning');
+            }
+        }
+        
+        function updateSoundUI() {
+            const icon = document.getElementById('menuSoundIcon');
+            const btn = document.getElementById('menuSoundBtn');
+            if (soundEnabled) {
+                icon.className = 'fas fa-volume-up';
+                btn.innerHTML = '<i class="fas fa-volume-up" id="menuSoundIcon"></i>&nbsp; آواز چالو';
+                btn.classList.remove('muted');
+            } else {
+                icon.className = 'fas fa-volume-mute';
+                btn.innerHTML = '<i class="fas fa-volume-mute" id="menuSoundIcon"></i>&nbsp; آواز بند';
+                btn.classList.add('muted');
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        function openMenu() {
+            playSound('click');
+            document.getElementById('menuOverlay').style.display = 'flex';
+        }
+
+        function closeMenu() {
+            playSound('click');
+            document.getElementById('menuOverlay').style.display = 'none';
+        }
+
+        function showRules() {
+            playSound('click');
+            alert('قوانین:\n\n1. ہر کھلاڑی کے پاس 9 گوٹیاں ہیں\n2. پہلے تمام گوٹیاں بورڈ پر رکھیں\n3. تین گوٹیاں ایک لائن میں = مِل (حریف کی ایک گوٹی ہٹائیں)\n4. حریف کو 2 گوٹیاں رہ جائیں تو آپ جیت گئے\n5. صرف 3 گوٹیاں باقی ہوں تو کہیں بھی جا سکتے ہیں');
+        }
+
+        // Online Variables
+        let isOnlineMode = false;
+        let gameRoomId = null;
+        let playerNumber = null;
+        let playerName = '';
+        let opponentName = '';
+        let gameRef = null;
+
+        const directConnections = {
+            0: [1, 9], 1: [0, 2, 4], 2: [1, 14],
+            3: [4, 10], 4: [1, 3, 5, 7], 5: [4, 13],
+            6: [7, 11], 7: [4, 6, 8], 8: [7, 12],
+            9: [0, 10, 21], 10: [3, 9, 11, 18], 11: [6, 10, 15],
+            12: [8, 13, 17], 13: [5, 12, 14, 20], 14: [2, 13, 23],
+            15: [11, 16], 16: [15, 17, 19], 17: [12, 16],
+            18: [10, 19], 19: [16, 18, 20, 22], 20: [13, 19],
+            21: [9, 22], 22: [19, 21, 23], 23: [14, 22]
+        };
+
+        const mills = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [9, 10, 11], [12, 13, 14], [15, 16, 17],
+            [18, 19, 20], [21, 22, 23],
+            [0, 9, 21], [3, 10, 18], [6, 11, 15],
+            [1, 4, 7], [16, 19, 22],
+            [8, 12, 17], [5, 13, 20], [2, 14, 23]
+        ];
+
+        // Online Functions
+        function createGame() {
+            const name = document.getElementById('playerName').value.trim();
+            if (!name) {
+                showNotification('براہ کرم اپنا نام لکھیں', 'error');
+                return;
+            }
+
+            playerName = name;
+            gameRoomId = generateGameCode();
+            isOnlineMode = true;
+            
+            // Set player number FIRST
+            playerNumber = 1;
+
+            gameRef = database.ref('games/' + gameRoomId);
+            
+            gameRef.set({
+                player1: {
+                    name: playerName,
+                    connected: true
+                },
+                player2: null,
+                board: board,
+                currentPlayer: 1,
+                phase: 'placing',
+                piecesLeft: {1: 9, 2: 9},
+                removingMode: false,
+                voiceSignal: null, 
+                createdAt: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                document.getElementById('lobbyOptions').style.display = 'none';
+                document.getElementById('createGameScreen').style.display = 'block';
+                document.getElementById('gameCode').textContent = gameRoomId;
+
+                listenToGameChanges();
+                showNotification('گیم بن گئی! آپ Player 1 ہیں', 'success');
+                playSound('click');
+            });
+        }
+
+        function generateGameCode() {
+            return Math.random().toString(36).substring(2, 8).toUpperCase();
+        }
+
+        function copyGameCode() {
+            const code = document.getElementById('gameCode').textContent;
+            navigator.clipboard.writeText(code);
+            showNotification('کوڈ کاپی ہو گیا!', 'success');
+            playSound('click');
+        }
+
+        function showJoinOptions() {
+            document.getElementById('lobbyOptions').style.display = 'none';
+            document.getElementById('joinGameScreen').style.display = 'block';
+            playSound('click');
+        }
+function joinGame() {
+    const name = document.getElementById('playerName').value.trim();
+    const code = document.getElementById('gameCodeInput').value.trim().toUpperCase();
+    
+    if (!name) {
+        showNotification('براہ کرم اپنا نام لکھیں', 'error');
+        playSound('error');
+        return;
+    }
+    
+    if (!code || code.length !== 6) {
+        showNotification('براہ کرم صحیح گیم کوڈ لکھیں', 'error');
+        playSound('error');
+        return;
+    }
+    
+    playerName = name;
+    gameRoomId = code;
+    isOnlineMode = true;
+    
+    gameRef = database.ref('games/' + gameRoomId);
+    
+    gameRef.once('value').then(snapshot => {
+        if (!snapshot.exists()) {
+            showNotification('یہ گیم موجود نہیں ہے', 'error');
+            playSound('error');
+            playerNumber = null;
+            isOnlineMode = false;
+            return;
+        }
+        
+        const gameData = snapshot.val();
+        if (gameData.player2) {
+            showNotification('یہ گیم پہلے سے بھری ہوئی ہے', 'error');
+            playSound('error');
+            playerNumber = null;
+            isOnlineMode = false;
+            return;
+        }
+        
+        playerNumber = 2;
+        
+        // ✅ درست Firebase اپ ڈیٹ
+        gameRef.update({
+            'player2': {
+                name: playerName,
+                connected: true
+            },
+            'voiceSignal': null
+        }).then(() => {
+            document.getElementById('lobbyModal').style.display = 'none';
+            listenToGameChanges();
+            // ✅ وائس سسٹم شروع کریں
+            onOnlineGameStart();
+            showNotification('گیم شروع! آپ Player 2 ہیں', 'success');
+            playSound('click');
+        });
+    });
+}
+        
+      function playOffline() {
+    isOnlineMode = false;
+    document.getElementById('lobbyModal').style.display = 'none';
+    document.getElementById('voiceHeaderBtn').style.display = 'none';
+    document.getElementById('voiceControls').style.display = 'none';
+    
+    showNotification('آف لائن موڈ شروع', 'info');
+    playSound('click');
+}
+
+        function backToLobby() {
+            document.getElementById('joinGameScreen').style.display = 'none';
+            document.getElementById('lobbyOptions').style.display = 'block';
+            playSound('click');
+        }
+
+        function cancelGame() {
+            if (gameRef) {
+                gameRef.remove();
+            }
+            document.getElementById('lobbyModal').style.display = 'none';
+            isOnlineMode = false;
+            showNotification('گیم منسوخ ہو گئی', 'info');
+            playSound('click');
+        }
+
+        function listenToGameChanges() {
+            if (!gameRef) return;
+
+            gameRef.on('value', snapshot => {
+                const gameData = snapshot.val();
+                if (!gameData) return;
+
+                if (gameData.player2 && playerNumber === 1) {
+                    opponentName = gameData.player2.name;
+                    document.getElementById('lobbyModal').style.display = 'none';
+                    showNotification('دوسرا کھلاڑی شامل ہو گیا!', 'success');
+                    updateOnlineStatus();
+                    // ✅ وائس سسٹم شروع کریں Player 1 کے لیے بھی
+                    onOnlineGameStart();
+                    playSound('click');
+                }
+
+                if (gameData.player1 && playerNumber === 2) {
+                    opponentName = gameData.player1.name;
+                    updateOnlineStatus();
+                }
+
+                // Sync game state
+                if (gameData.board) {
+                    syncGameState(gameData);
+                }
+            });
+        }
+
+        function updateOnlineStatus() {
+            if (!isOnlineMode) return;
+            
+            if (playerNumber === 1) {
+                document.getElementById('p1-online').innerHTML = `<span class="online-status connected"></span>${playerName}`;
+                document.getElementById('p2-online').innerHTML = opponentName ? 
+                    `<span class="online-status connected"></span>${opponentName}` : '';
+            } else {
+                document.getElementById('p2-online').innerHTML = `<span class="online-status connected"></span>${playerName}`;
+                document.getElementById('p1-online').innerHTML = opponentName ? 
+                    `<span class="online-status connected"></span>${opponentName}` : '';
+            }
+        }
+
+      function syncGameState(gameData) {
+    console.log("📦 Firebase سے ڈیٹا آیا:", gameData);
+    
+    if (!gameData) {
+        console.error("❌ gameData موجود نہیں ہے!");
+        return;
+    }
+    
+    // ✅ CRITICAL FIX: Check if it's opponent's turn to sync
+    const isOpponentTurn = gameData.currentPlayer !== playerNumber;
+    
+    // ✅ پہلے بورڈ کو صاف کریں
+    board = Array(24).fill(null);
+    
+    // ✅ Firebase سے بورڈ ڈیٹا پڑھیں
+    if (gameData.board) {
+        const boardData = gameData.board;
+        
+        // Firebase object کی keys سے array بنائیں
+        if (typeof boardData === 'object' && boardData !== null) {
+            Object.keys(boardData).forEach(key => {
+                const index = parseInt(key);
+                if (!isNaN(index) && index >= 0 && index < 24) {
+                    const value = boardData[key];
+                    if (value !== null && value !== undefined) {
+                        board[index] = value;
+                    }
+                }
+            });
+        } else if (Array.isArray(boardData)) {
+            for (let i = 0; i < 24; i++) {
+                if (boardData[i] !== null && boardData[i] !== undefined) {
+                    board[i] = boardData[i];
+                }
+            }
+        }
+        
+        console.log("✅ Board array میں تبدیل:", board);
+    }
+    
+    // ✅ CRITICAL FIX: باقی ڈیٹا سیٹ کریں - بشمول removingMode
+    currentPlayer = gameData.currentPlayer || 1;
+    phase = gameData.phase || 'placing';
+    piecesLeft = gameData.piecesLeft || { 1: 9, 2: 9 };
+    removingMode = gameData.removingMode || false; // ✅ یہ بہت ضروری ہے!
+    
+    // ✅ پہلے سے موجود گوٹیاں صاف کریں
+    document.querySelectorAll('.piece').forEach(p => p.remove());
+    
+    // ✅ نئی گوٹیاں ڈرائیں
+    for (let pos = 0; pos < 24; pos++) {
+        if (board[pos] !== null && board[pos] !== undefined) {
+            drawPiece(pos, board[pos]);
+            console.log(`✅ پوزیشن ${pos} پر گوٹی ${board[pos]} ڈرائی`);
+        }
+    }
+    
+    // ✅ CRITICAL FIX: removable highlights صاف کریں
+    clearRemovableHighlights();
+    
+    // ✅ NEW: Sync selected piece and movable points
+    clearMovablePoints();
+    document.querySelectorAll('.piece').forEach(p => p.classList.remove('selected'));
+    
+    if (gameData.selectedPos !== null && gameData.selectedPos !== undefined) {
+        selectedPos = gameData.selectedPos;
+        highlightPiece(selectedPos);
+        highlightMovablePoints(selectedPos);
+        console.log(`✅ Selected piece synced: ${selectedPos}`);
+    } else {
+        selectedPos = null;
+    }
+    
+    // ✅ NEW: Sync removable pieces highlight for BOTH players
+    if (removingMode && phase === 'removing') {
+        highlightRemovablePieces(); // دونوں players کو removable pieces دکھائیں
+        console.log('✅ Removable pieces highlighted for both players');
+    }
+    
+    if (phase === 'gameover' && gameData.winner) {
+        showCelebration(gameData.winner);
+    }
+    
+    if (gameData.taunt) {
+        showIncomingTaunt(gameData.taunt);
+    }
+    
+    if (gameData.emoji) {
+        showIncomingEmoji(gameData.emoji);
+    }
+    
+    updateUI();
+    updatePhaseIndicator();
+    
+    // ✅ CRITICAL FIX: اگر میری باری آئی ہے تو notification دکھائیں
+    const wasMyTurn = currentPlayer === playerNumber;
+    if (wasMyTurn && isOpponentTurn) {
+        // ابھی opponent نے move کیا اور اب میری باری آئی
+        showNotification('✅ آپ کی باری ہے', 'success');
+        playSound('place');
+    }
+    
+    console.log("🎮 بورڈ کا فائنل ڈیٹا:", board);
+    console.log("🎮 currentPlayer:", currentPlayer);
+    console.log("🎮 phase:", phase);
+    console.log("🎮 removingMode:", removingMode); // ✅ Debug کے لیے
+} 
+function updateGameState() {
+    if (!isOnlineMode || !gameRef) return;
+    
+    // ✅ IMPROVED: Better board sync with guaranteed update
+    const boardObject = {};
+    for (let i = 0; i < 24; i++) {
+        if (board[i] !== null) {
+            boardObject[i] = board[i];
+        }
+    }
+    
+    // ✅ تمام ضروری data اکٹھا بھیجیں (بشمول selectedPos)
+    const gameStateData = {
+        board: boardObject,
+        currentPlayer: currentPlayer,
+        phase: phase,
+        piecesLeft: piecesLeft,
+        removingMode: removingMode,
+        selectedPos: selectedPos, // ✅ SYNC selected piece
+        winner: gameWinner,
+        lastUpdate: Date.now() // ✅ timestamp add کریں
+    };
+    
+    // Firebase میں update کریں
+    gameRef.update(gameStateData).then(() => {
+        console.log('✅ Game state updated successfully');
+    }).catch((error) => {
+        console.error('❌ Firebase update failed:', error);
+        // Retry after 500ms
+        setTimeout(() => gameRef.update(gameStateData), 500);
+    });
+}
+        
+
+        // Initialize
+        function init() {
+            document.getElementById('voiceHeaderBtn').style.display = 'none';
+            const points = document.querySelectorAll('.point');
+            points.forEach((point, index) => {
+                point.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    handlePointClick(index);
+                });
+            });
+
+            updateUI();
+            updatePhaseIndicator();
+            updateSoundUI(); // ساؤنڈ UI اپڈیٹ کریں
+            updateHistoryDisplay(); // ہسٹری UI اپڈیٹ کریں
+            
+            // Show lobby modal on start
+            document.getElementById('lobbyModal').style.display = 'flex';
+        }
+
+
+
+        function handlePointClick(pos) {
+    // ✅ IMPROVED: Better turn check for online mode
+    if (isOnlineMode) {
+        if (currentPlayer !== playerNumber) {
+            showNotification('آپ کی باری نہیں ہے - انتظار کریں', 'error');
+            playSound('error');
+            return;
+        }
+    }
+    
+    if (removingMode) {
+        showNotification('پہلے مخالف کی گوٹی ہٹائیں!', 'error');
+        playSound('error');
+        return;
+    }
+    
+    if (phase === 'placing') {
+        if (board[pos] === null) {
+            board[pos] = currentPlayer;
+            drawPiece(pos, currentPlayer);
+            piecesLeft[currentPlayer]--;
+            playSound('place');
+            
+            if (checkMill(pos)) {
+                removingMode = true;
+                phase = 'removing';
+                highlightRemovablePieces();
+                playSound('mill');
+                showNotification('مِل بن گئی! مخالف کی ایک گوٹی ہٹائیں', 'success');
+                updatePhaseIndicator();
+            } else {
+                if (piecesLeft[1] === 0 && piecesLeft[2] === 0) {
+                    phase = 'moving';
+                }
+                switchPlayer();
+            }
+            
+            updateUI();
+            updateGameState(); // ✅ یہ لائن ضرور ہونی چاہیے
+        }
+    } else if (phase === 'moving') {
+        if (selectedPos === null) {
+            showNotification('پہلے اپنی گوٹی منتخب کریں', 'error');
+            playSound('error');
+            return;
+        } else {
+            const currentPlayerPieces = board.filter(p => p === currentPlayer).length;
+            const canFly = currentPlayerPieces === 3;
+            const isConnected = directConnections[selectedPos].includes(pos);
+            
+            if (board[pos] === null && (canFly || isConnected)) {
+                board[pos] = currentPlayer;
+                board[selectedPos] = null;
+                movePiece(selectedPos, pos);
+                playSound('move');
+                
+                clearMovablePoints();
+                unhighlightPiece(selectedPos);
+                selectedPos = null;
+                
+                if (checkMill(pos)) {
+                    removingMode = true;
+                    phase = 'removing';
+                    highlightRemovablePieces();
+                    playSound('mill');
+                    showNotification('مِل بن گئی! مخالف کی ایک گوٹی ہٹائیں', 'success');
+                    updatePhaseIndicator();
+                } else {
+                    switchPlayer();
+                }
+                
+                updateGameState(); // ✅ یہ لائن ضرور ہونی چاہیے
+                updateUI();
+            } else {
+                showNotification('یہاں گوٹی نہیں رکھ سکتے', 'error');
+                playSound('error');
+            }
+        }
+    }
+}
+        function checkMill(pos) {
+            const player = board[pos];
+            if (player === null) return false;
+            
+            return mills.some(mill => 
+                mill.includes(pos) && mill.every(p => board[p] === player)
+            );
+        }
+
+        function isInMill(pos) {
+            return checkMill(pos);
+        }
+
+        function drawPiece(pos, player) {
+            const point = document.querySelector(`[data-pos="${pos}"]`);
+            const piece = document.createElement('div');
+            piece.className = `piece player${player}`;
+            piece.dataset.pos = pos;
+            piece.textContent = player === 1 ? '١' : '٢';
+            piece.style.left = point.style.left;
+            piece.style.top = point.style.top;
+            
+            piece.onclick = (e) => {
+                e.stopPropagation();
+                handlePieceClick(pos);
+            };
+            
+            document.querySelector('.board-inner').appendChild(piece);
+        }
+
+        // ✅ NEW: handlePieceClick function - یہ function missing تھا!
+        function handlePieceClick(pos) {
+            // ✅ Online mode میں turn check کریں
+            if (isOnlineMode && currentPlayer !== playerNumber) {
+                showNotification('آپ کی باری نہیں ہے', 'error');
+                playSound('error');
+                return;
+            }
+
+            const clickedPiece = board[pos];
+            
+            // ✅ اگر removing mode ہے (مِل بن گئی ہے)
+            if (removingMode && phase === 'removing') {
+                const opponent = currentPlayer === 1 ? 2 : 1;
+                
+                // چیک کریں کہ یہ مخالف کی گوٹی ہے
+                if (clickedPiece === opponent) {
+                    // چیک کریں کہ یہ گوٹی removable ہے (mill میں نہیں یا سب mill میں ہیں)
+                    const allOpponentInMills = board.reduce((positions, player, index) => {
+                        if (player === opponent) positions.push(index);
+                        return positions;
+                    }, []).every(p => isInMill(p));
+                    
+                    if (allOpponentInMills || !isInMill(pos)) {
+                        // گوٹی ہٹائیں
+                        board[pos] = null;
+                        removePieceWithAnimation(pos);
+                        playSound('remove');
+                        
+                        // Taunt popup دکھائیں
+                        if (isOnlineMode) {
+                            showTauntPopup();
+                        }
+                        
+                        clearRemovableHighlights();
+                        removingMode = false;
+                        
+                        // Check win condition
+                        const opponentPiecesLeft = board.filter(p => p === opponent).length;
+                        console.log('🔍 Checking win: Opponent pieces =', opponentPiecesLeft, 'Pieces left[opponent] =', piecesLeft[opponent]);
+                        
+                        if (opponentPiecesLeft <= 2 && piecesLeft[opponent] === 0) {
+                            phase = 'gameover';
+                            gameWinner = currentPlayer;
+                            
+                            console.log('🏆 WINNER DETECTED! Player', currentPlayer, 'wins!');
+                            
+                            // پہلے UI update کریں
+                            updateUI();
+                            updatePhaseIndicator();
+                            updateGameState();
+                            
+                            // پھر celebration دکھائیں
+                            setTimeout(() => {
+                                console.log('🎉 Calling showCelebration for player', currentPlayer);
+                                showCelebration(currentPlayer);
+                            }, 500);
+                            
+                            playSound('win');
+                            
+                            if (!isOnlineMode) {
+                                saveGameResult(currentPlayer);
+                            }
+                            
+                            return; // ✅ باقی code نہ چلے
+                        } else {
+                            // اگر placing phase میں تھے
+                            if (piecesLeft[1] === 0 && piecesLeft[2] === 0) {
+                                phase = 'moving';
+                            } else {
+                                phase = 'placing';
+                            }
+                            switchPlayer();
+                        }
+                        
+                        updateUI();
+                        updatePhaseIndicator();
+                        updateGameState(); // ✅ Firebase sync
+                        return;
+                    } else {
+                        showNotification('یہ گوٹی مِل میں ہے، دوسری منتخب کریں', 'error');
+                        playSound('error');
+                        return;
+                    }
+                } else {
+                    showNotification('مخالف کی گوٹی منتخب کریں', 'error');
+                    playSound('error');
+                    return;
+                }
+            }
+            
+            // ✅ اگر moving phase ہے اور اپنی گوٹی select کر رہے ہیں
+            if (phase === 'moving' && clickedPiece === currentPlayer) {
+                if (selectedPos === pos) {
+                    // اگر پہلے سے یہی selected ہے تو deselect کریں
+                    unhighlightPiece(pos);
+                    clearMovablePoints();
+                    selectedPos = null;
+                    playSound('click');
+                    updateGameState(); // ✅ SYNC deselection
+                } else {
+                    // نئی گوٹی select کریں
+                    if (selectedPos !== null) {
+                        unhighlightPiece(selectedPos);
+                    }
+                    clearMovablePoints();
+                    selectedPos = pos;
+                    highlightPiece(pos);
+                    highlightMovablePoints(pos);
+                    playSound('click');
+                    updateGameState(); // ✅ SYNC selection
+                }
+            }
+        }
+
+        function movePiece(from, to) {
+            const piece = document.querySelector(`.piece[data-pos="${from}"]`);
+            const point = document.querySelector(`[data-pos="${to}"]`);
+            piece.style.left = point.style.left;
+            piece.style.top = point.style.top;
+            piece.dataset.pos = to;
+            
+            piece.onclick = (e) => {
+                e.stopPropagation();
+                handlePieceClick(to);
+            };
+        }
+
+        function removePieceWithAnimation(pos) {
+            const piece = document.querySelector(`.piece[data-pos="${pos}"]`);
+            if (piece) {
+                showBloodSplatter(pos); // 😭 رونے والا ایموجی
+                piece.style.transition = 'all 0.3s ease-in-out';
+                piece.style.transform = 'translate(-50%, -50%) scale(0)';
+                piece.style.opacity = '0';
+                setTimeout(() => {
+                    if (piece.parentNode) {
+                        piece.parentNode.removeChild(piece);
+                    }
+                }, 300);
+            }
+        }
+
+        function highlightMovablePoints(pos) {
+            const connectedPoints = directConnections[pos] || [];
+            const currentPlayerPieces = board.filter(p => p === currentPlayer).length;
+            const canFly = currentPlayerPieces === 3;
+            
+            if (canFly) {
+                for (let i = 0; i < 24; i++) {
+                    if (board[i] === null) {
+                        const pointElement = document.querySelector(`.point[data-pos="${i}"]`);
+                        if (pointElement) {
+                            pointElement.classList.add('movable-point');
+                        }
+                    }
+                }
+                showNotification('آپ کی صرف 3 گوٹیاں ہیں! کسی بھی خالی پوائنٹ پر جا سکتے ہیں', 'info');
+            } else {
+                connectedPoints.forEach(point => {
+                    if (board[point] === null) {
+                        const pointElement = document.querySelector(`.point[data-pos="${point}"]`);
+                        if (pointElement) {
+                            pointElement.classList.add('movable-point');
+                        }
+                    }
+                });
+            }
+        }
+
+        function clearMovablePoints() {
+            document.querySelectorAll('.point').forEach(point => {
+                point.classList.remove('movable-point');
+            });
+        }
+
+        function highlightRemovablePieces() {
+            const opponent = currentPlayer === 1 ? 2 : 1;
+            let opponentPieces = [];
+            
+            for (let i = 0; i < 24; i++) {
+                if (board[i] === opponent) {
+                    opponentPieces.push(i);
+                }
+            }
+            
+            const allInMills = opponentPieces.every(p => isInMill(p));
+            
+            opponentPieces.forEach(pos => {
+                const piece = document.querySelector(`.piece[data-pos="${pos}"]`);
+                if (piece) {
+                    if (allInMills || !isInMill(pos)) {
+                        piece.classList.add('removable');
+                    }
+                }
+            });
+        }
+
+        function clearRemovableHighlights() {
+            document.querySelectorAll('.piece').forEach(piece => {
+                piece.classList.remove('removable');
+                piece.classList.remove('selected');
+            });
+        }
+
+        function highlightPiece(pos) {
+            const piece = document.querySelector(`.piece[data-pos="${pos}"]`);
+            if (piece) {
+                piece.classList.add('selected');
+            }
+        }
+
+        function unhighlightPiece(pos) {
+            const piece = document.querySelector(`.piece[data-pos="${pos}"]`);
+            if (piece) {
+                piece.classList.remove('selected');
+            }
+        }
+
+        function switchPlayer() {
+            currentPlayer = currentPlayer === 1 ? 2 : 1;
+            updatePhaseIndicator();
+            
+            const currentPlayerPieces = board.filter(p => p === currentPlayer).length;
+            if (phase === 'moving' && currentPlayerPieces === 3) {
+                showNotification('آپ کی صرف 3 گوٹیاں ہیں! آپ کسی بھی خالی پوائنٹ پر جا سکتے ہیں', 'info');
+            }
+        }
+
+        function updatePhaseIndicator() {
+            document.getElementById('player1-info').classList.remove('active');
+            document.getElementById('player2-info').classList.remove('active');
+            
+            if (currentPlayer === 1) {
+                document.getElementById('player1-info').classList.add('active');
+            } else {
+                document.getElementById('player2-info').classList.add('active');
+            }
+            
+            let phaseText = '';
+            if (phase === 'placing') {
+                phaseText = 'مرحلہ: گوٹیاں رکھنا';
+            } else if (phase === 'moving') {
+                const currentPlayerPieces = board.filter(p => p === currentPlayer).length;
+                if (currentPlayerPieces === 3) {
+                    phaseText = 'مرحلہ: گوٹیاں چلانا (3 گوٹیاں - کہیں بھی جا سکتے ہیں)';
+                } else {
+                    phaseText = 'مرحلہ: گوٹیاں چلانا';
+                }
+            } else if (phase === 'removing') {
+                phaseText = 'مرحلہ: مخالف کی گوٹی ہٹانا';
+            } else if (phase === 'gameover') {
+                phaseText = 'گیم ختم';
+            }
+            
+            document.getElementById('phaseIndicator').textContent = phaseText;
+        }
+
+        function updateUI() {
+            document.getElementById('p1-count').textContent = piecesLeft[1];
+            document.getElementById('p2-count').textContent = piecesLeft[2];
+        }
+
+        function showCelebration(winner) {
+            console.log('🎉 showCelebration called with winner:', winner);
+            
+            const modal = document.getElementById('celebrationModal');
+            const message = document.getElementById('winnerMessage');
+            const loserModal = document.getElementById('loserModal');
+            const loserMessage = document.getElementById('loserMessage');
+            const loserSubMessage = document.getElementById('loserSubMessage');
+            const emoji = document.querySelector('.celebration-emoji');
+
+            if (isOnlineMode) {
+                if (winner === playerNumber) {
+                    // ===== آپ جیت گئے =====
+                    message.textContent = `مبارک! آپ جیت گئے!`;
+                    emoji.textContent = '🏆';
+                    modal.style.display = 'flex';
+                    createConfetti();
+                    playSound('win');
+                    console.log('✅ Winner modal displayed (online mode)');
+                } else {
+                    // ===== آپ ہار گئے =====
+                    loserMessage.textContent = `آپ ہار گئے!`;
+                    loserSubMessage.textContent = `${opponentName} نے آپ کو شکست دی 💀`;
+                    playSound('error');
+
+                    // سادہ modal دکھائیں
+                    loserModal.style.display = 'flex';
+                    console.log('✅ Loser modal displayed (online mode)');
+                }
+            } else {
+                // آف لائن موڈ — دونوں کو جیتنے والا میسج
+                message.textContent = `کھلاڑی ${winner} جیت گیا!`;
+                emoji.textContent = '🏆';
+                modal.style.display = 'flex';
+                createConfetti();
+                playSound('win');
+                console.log('✅ Winner modal displayed (offline mode)');
+            }
+        }
+
+        function closeLoser() {
+            const loserModal = document.getElementById('loserModal');
+            loserModal.style.display = 'none';
+            loserModal.classList.remove('creepy-active');
+            playSound('click');
+        }
+
+        function createConfetti() {
+            const celebrationContent = document.querySelector('.celebration-content');
+            
+            if (!celebrationContent) {
+                console.error('❌ celebration-content element not found!');
+                return;
+            }
+            
+            console.log('🎊 Creating confetti...');
+            const colors = ['#FFD700', '#FFA500', '#FF6347', '#4CAF50', '#2196F3'];
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDelay = Math.random() * 3 + 's';
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    celebrationContent.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }, i * 100);
+            }
+        }
+
+        function closeCelebration() {
+            document.getElementById('celebrationModal').style.display = 'none';
+            playSound('click');
+        }
+
+        function playAgain() {
+            closeCelebration();
+            closeLoser();
+            resetGame();
+        }
+
+        function resetGame() {
+            // وائس کال بند کریں اگر چل رہی ہو
+            if (typeof endCall === 'function') {
+                endCall();
+            }
+            
+            playSound('click');
+            board.fill(null);
+            currentPlayer = 1;
+            phase = 'placing';
+            piecesLeft = {1: 9, 2: 9};
+            selectedPos = null;
+            removingMode = false;
+            gameWinner = null; // ✅ winner صاف کریں
+            document.querySelectorAll('.piece').forEach(p => p.remove());
+            clearMovablePoints();
+            clearRemovableHighlights();
+            updateUI();
+            updatePhaseIndicator();
+            closeMenu();
+            
+            if (isOnlineMode && gameRef) {
+                updateGameState();
+                showNotification('نئی گیم شروع!', 'success');
+            } else {
+                // Reset to lobby for new online game
+                if (gameRef) {
+                    gameRef.off();
+                    gameRef.remove();
+                }
+                isOnlineMode = false;
+                gameRoomId = null;
+                playerNumber = null;
+                gameRef = null;
+                document.getElementById('p1-online').innerHTML = '';
+                document.getElementById('p2-online').innerHTML = '';
+                document.getElementById('lobbyModal').style.display = 'flex';
+                document.getElementById('createGameScreen').style.display = 'none';
+                document.getElementById('joinGameScreen').style.display = 'none';
+                document.getElementById('lobbyOptions').style.display = 'block';
+            }
+        }
+
+        // ===== CREEPY SYSTEM - DISABLED =====
+        const creepyMessages = [];
+
+        // ===== TAUNT سسٹم =====
+        const tauntMessages = [
+            { text: "تیرے کو بتاتا ہوں 🤬", emoji: "😤" },
+            { text: "خیال رکھنا 😏", emoji: "😈" },
+            { text: "بس اتنا ہی تھا؟ 💀", emoji: "💀" },
+            { text: "اوے! درد ہوا ہوگا 😂", emoji: "😂" },
+            { text: "یہ شروعات ہے 🔥", emoji: "🔥" },
+            { text: "مجھے جیتنے دو 😜", emoji: "😜" },
+            { text: "چپ کر ابے کتے 🤣", emoji: "🤣" },
+            { text: "پنگا لیا ہے 👀", emoji: "👀" },
+            { text: "آگے بھی آئے گا 😤", emoji: "⚡" },
+            { text: "نہیں بچے گے 🏆", emoji: "🏆" },
+            { text: "وہ والا پہنچیا 😌", emoji: "😌" },
+            { text: "سوچو کیا ہوگا 🤔", emoji: "🤔" }
+        ];
+
+        let lastTauntId = null; // دوسرے کا آنے والا taunt دوسری بار نہ دکھائیں
+
+        // بٹنز بنائیں
+        function buildTauntButtons() {
+            const container = document.getElementById('tauntButtons');
+            container.innerHTML = '';
+            tauntMessages.forEach((t, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'taunt-btn';
+                btn.innerHTML = `${t.emoji}<br>${t.text}`;
+                btn.onclick = () => sendTaunt(i);
+                container.appendChild(btn);
+            });
+        }
+
+        // پاپ اپ دکھائیں (گوٹی مارنے کے بعد)
+        function showTauntPopup() {
+            if (!isOnlineMode) return;
+            document.getElementById('tauntPopup').classList.add('visible');
+        }
+
+        function closeTauntPopup() {
+            document.getElementById('tauntPopup').classList.remove('visible');
+        }
+
+        // Firebase میں taunt بھیجیں
+        function sendTaunt(index) {
+            if (!gameRef) return;
+            closeTauntPopup();
+
+            gameRef.update({
+                taunt: {
+                    from: playerNumber,
+                    index: index,
+                    id: Date.now() // ہر بار نیا id تاکہ دوسرا دیکھے
+                }
+            });
+        }
+
+        // سامنے والے کا taunt دکھائیں (بیلون)
+        function showIncomingTaunt(tauntData) {
+            if (!tauntData || tauntData.from === playerNumber) return;
+            if (tauntData.id === lastTauntId) return; // دوسری بار نہیں
+            lastTauntId = tauntData.id;
+
+            const msg = tauntMessages[tauntData.index];
+            if (!msg) return;
+
+            const senderName = opponentName || 'دوسرا کھلاڑی';
+            document.getElementById('tauntSender').textContent = `${senderName} نے کہا:`;
+            document.getElementById('tauntText').textContent = `${msg.emoji} ${msg.text}`;
+
+            const balloon = document.getElementById('tauntBalloon');
+            balloon.classList.remove('visible');
+            void balloon.offsetWidth; // رے فلو
+            balloon.classList.add('visible');
+
+            // 3 سیکنڈ بعد غایب
+            setTimeout(() => {
+                balloon.classList.remove('visible');
+            }, 6000);
+        }
+
+        let creepyTimers = [];
+        let ghostEyesTimeout = null;
+
+        // بھوت کی آنکھیں دکھائیں
+        function spawnGhostEyes() {
+            if (phase === 'gameover') return;
+            const eyes = document.getElementById('ghostEyes');
+            // رنڈم پوزیشن — صرف کناروں پر
+            const side = Math.floor(Math.random() * 4); // 0=top 1=right 2=bottom 3=left
+            let top, left;
+            if (side === 0) { top = '5%';  left = Math.random()*70+10 + '%'; }
+            else if (side === 1) { top = Math.random()*70+10 + '%'; left = '88%'; }
+            else if (side === 2) { top = '85%'; left = Math.random()*70+10 + '%'; }
+            else { top = Math.random()*70+10 + '%'; left = '5%'; }
+
+            eyes.style.top = top;
+            eyes.style.left = left;
+            eyes.classList.add('visible');
+
+            // 2 سیکنڈ بعد غایب (زیادہ دیر)
+            ghostEyesTimeout = setTimeout(() => {
+                eyes.classList.remove('visible');
+                // اگلی بار شیڈیول کریں
+                scheduleGhostEyes();
+            }, 2000);
+        }
+
+        function scheduleGhostEyes() {
+            if (phase === 'gameover') return;
+            // 5 سے 12 سیکنڈ کے بعد دوبارہ (جلدی جلدی)
+            const delay = (Math.random() * 7 + 5) * 1000;
+            ghostEyesTimeout = setTimeout(spawnGhostEyes, delay);
+        }
+
+        // رونے والا ایموجی دکھائیں
+        function showBloodSplatter(pos) {
+            const point = document.querySelector(`[data-pos="${pos}"]`);
+            if (!point) return;
+
+            const rect = point.getBoundingClientRect();
+            
+            const splatter = document.createElement('div');
+            splatter.className = 'blood-splatter';
+            splatter.textContent = '😭';
+            splatter.style.left = (rect.left + rect.width/2 - 15) + 'px';
+            splatter.style.top = (rect.top - 10) + 'px';
+            document.body.appendChild(splatter);
+            setTimeout(() => splatter.remove(), 1400);
+        }
+
+        // اندھیرا چھائیں - DISABLED
+        function darkFlash(duration = 200) {
+            // const flash = document.getElementById('darkFlash');
+            // flash.classList.add('active');
+            // setTimeout(() => flash.classList.remove('active'), duration);
+        }
+
+        // بورڈ جھلمل - DISABLED
+        function boardFlicker() {
+            // const flicker = document.getElementById('boardFlicker');
+            // flicker.classList.add('active');
+            // setTimeout(() => flicker.classList.remove('active'), 300);
+        }
+
+        // خوف ناک میسج دکھائیں - DISABLED
+        function showCreepyMessage(msg) {
+            // const el = document.getElementById('creepyNotification');
+            // el.textContent = msg;
+            // el.classList.add('visible');
+            // darkFlash(150);
+            // setTimeout(() => {
+            //     el.classList.remove('visible');
+            //     el.style.animation = 'none';
+            //     void el.offsetWidth;
+            //     el.style.animation = '';
+            // }, 2800);
+        }
+
+        // رنڈم خوف ناک میسج شیڈیول کریں - DISABLED
+        function scheduleCreepyMessage() {
+            // if (phase === 'gameover') return;
+            // const delay = (Math.random() * 25 + 15) * 1000;
+            // setTimeout(() => {
+            //     if (phase === 'gameover') return;
+            //     const msg = creepyMessages[Math.floor(Math.random() * creepyMessages.length)];
+            //     boardFlicker();
+            //     setTimeout(() => showCreepyMessage(msg), 250);
+            //     scheduleCreepyMessage();
+            // }, delay);
+        }
+
+        // ===== ہارنے والے کا خوف ناک سیکوینس - DISABLED =====
+        function creepyLoserSequence() {
+            // Simple version - no flash/flicker
+            const loserModal = document.getElementById('loserModal');
+            loserModal.classList.add('creepy-active');
+        }
+
+        // ===== EMOJI PANEL سسٹم =====
+        const emojiList = [
+            { emoji: '🤣', text: 'کیسا لگا بھائ' },
+            { emoji: '🤬', text: 'دماغ خراب ہو جائے گا' },
+            { emoji: '😭', text: 'ایسا نہ کرو میری جان' },
+            { emoji: '😜', text: 'اب بول بیٹا' },
+            { emoji: '😆', text: 'کیو مزا آیا' },
+            { emoji: '😂', text: 'کیسا لگا میرا مزاق' },
+            { emoji: '😲', text: 'واہ' },
+            { emoji: '🥴', text: 'دکھ ہوا' },
+            { emoji: '😤', text: 'اب نہیں چھوڑوں گا' },
+            { emoji: '😎', text: 'ابھی تو پارٹی شروع ہوئی ہے' },
+            { emoji: '😡', text: 'تیری دادا گیری نکال دوں گا' },
+            { emoji: '🫡', text: 'سلام سرکار' },
+            { emoji: '😍', text: 'شاباش' },
+            { emoji: '💀', text: 'مر گیا' },
+            { emoji: '🔥', text: 'آگ لگا دی' },
+            { emoji: '👀', text: 'کیا دیکھ رہا ہے' },
+            { emoji: '😏', text: 'اب دیکھو' },
+            { emoji: '🤣', text: 'ہنسی نہیں رکتی' },
+            { emoji: '😌', text: 'سکون مل گیا' },
+            { emoji: '🤔', text: 'سوچ میں پڑ گیا' },
+            { emoji: '😈', text: 'شیطان بن جاؤں گا' },
+            { emoji: '💪', text: 'طاقت دکھاؤں گا' },
+            { emoji: '👏', text: 'واہ واہ' },
+            { emoji: '🙌', text: 'مبارک ہو' },
+            { emoji: '🤩', text: 'کمال کر دیا' },
+            { emoji: '😘', text: 'محبت' },
+            { emoji: '👍', text: 'بہترین' },
+            { emoji: '👎', text: 'بیکار' },
+            { emoji: '❤️', text: 'دل سے' },
+            { emoji: '💯', text: 'سو فیصد' },
+            { emoji: '⚡', text: 'بجلی گرا دی' },
+            { emoji: '🎉', text: 'جشن منا لو' }
+        ];
+
+        let lastEmojiId = null; // دوسری بار نہیں دکھانا
+
+        function buildEmojiGrid() {
+            const grid = document.getElementById('emojiGrid');
+            grid.innerHTML = '';
+            emojiList.forEach((item, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'emoji-btn';
+                btn.textContent = item.emoji;
+                btn.onclick = () => sendEmoji(i);
+                grid.appendChild(btn);
+            });
+        }
+
+        function toggleEmojiPanel() {
+            if (!isOnlineMode) {
+                showNotification('آن لائن گیم میں استعمال کریں', 'error');
+                playSound('error');
+                return;
+            }
+            const panel = document.getElementById('emojiPanel');
+            panel.classList.toggle('visible');
+            playSound('click');
+        }
+
+        function sendEmoji(index) {
+            if (!gameRef) return;
+            document.getElementById('emojiPanel').classList.remove('visible');
+            playSound('click');
+
+            gameRef.update({
+                emoji: {
+                    from: playerNumber,
+                    index: index,
+                    id: Date.now()
+                }
+            });
+        }
+
+        // دوسرے کا آنے والا ایموجی دکھائیں
+        function showIncomingEmoji(emojiData) {
+            if (!emojiData || emojiData.from === playerNumber) return;
+            if (emojiData.id === lastEmojiId) return;
+            lastEmojiId = emojiData.id;
+
+            const item = emojiList[emojiData.index];
+            if (!item) return;
+
+            const senderName = opponentName || 'دوسرا کھلاڑی';
+
+            // تازہ بیلون استعمال کریں — taunt balloon کی طرح
+            document.getElementById('tauntSender').textContent = `${senderName}:`;
+            document.getElementById('tauntText').textContent = `${item.emoji} ${item.text}`;
+
+            const balloon = document.getElementById('tauntBalloon');
+            balloon.classList.remove('visible');
+            void balloon.offsetWidth;
+            balloon.classList.add('visible');
+
+            setTimeout(() => {
+                balloon.classList.remove('visible');
+            }, 3000);
+        }
+
+        // شروعات میں creepy سسٹم چالو کریں
+        function startCreepySystem() {
+            scheduleGhostEyes(); // ✅ آنکھیں چالو
+            // scheduleCreepyMessage(); // ❌ رینڈم میسج بند
+            buildTauntButtons(); // ✅ TAUNT بٹنز بنائیں
+            buildEmojiGrid();    // ✅ EMOJI گرڈ بنائیں
+        }
+
+        init();
+        startCreepySystem();
+
+// ===== وائس چیٹ سسٹم =====
+let localStream = null;
+let remoteStream = null;
+let peerConnection = null;
+let isVoiceEnabled = false;
+let isCallActive = false;
+let dataChannel = null;
+
+// ICE Servers Configuration (WebRTC کے لیے ضروری)
+const iceServers = {
+    iceServers: [
+        // Google STUN servers
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun3.l.google.com:19302' },
+        { urls: 'stun:stun4.l.google.com:19302' },
+        // Open Relay TURN servers (free)
+        {
+            urls: 'turn:openrelay.metered.ca:80',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        },
+        {
+            urls: 'turn:openrelay.metered.ca:443',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        },
+        {
+            urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+            username: 'openrelayproject',
+            credential: 'openrelayproject'
+        }
+    ]
+};
+
+function toggleVoicePanel() {
+    if (!isOnlineMode) {
+        showNotification('آن لائن گیم میں وائس چیٹ استعمال کریں', 'error');
+        playSound('error');
+        return;
+    }
+    
+    const voiceControls = document.getElementById('voiceControls');
+    const voiceHeaderBtn = document.getElementById('voiceHeaderBtn');
+    
+    if (voiceControls.style.display === 'none' || voiceControls.style.display === '') {
+        voiceControls.style.display = 'block';
+        voiceHeaderBtn.classList.add('active');
+        showNotification('وائس چیٹ چالو 🎤', 'success');
+    } else {
+        voiceControls.style.display = 'none';
+        voiceHeaderBtn.classList.remove('active');
+        showNotification('وائس چیٹ بند 🔇', 'info');
+    }
+    playSound('click');
+}
+    
+// مائیک ٹوگل
+async function toggleMicrophone() {
+    const micBtn = document.getElementById('micToggleBtn');
+    const voiceStatus = document.getElementById('voiceStatus');
+    
+    if (!localStream) {
+        try {
+            console.log('🎤 Requesting microphone access...');
+            localStream = await navigator.mediaDevices.getUserMedia({ 
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    autoGainControl: true,
+                    sampleRate: 48000,
+                    channelCount: 1
+                },
+                video: false 
+            });
+            
+            console.log('✅ Microphone access granted');
+            console.log('Audio tracks:', localStream.getAudioTracks());
+            
+            isVoiceEnabled = true;
+            micBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+            micBtn.style.background = '#f44336';
+            voiceStatus.innerHTML = 'مائیک چالو 🎤';
+            voiceStatus.style.color = '#4CAF50';
+            
+            showNotification('مائیک چالو ہو گیا ✅', 'success');
+            playSound('place');
+        } catch (error) {
+            console.error('❌ مائیک تک رسائی نہیں:', error);
+            showNotification('مائیک کی اجازت درکار ہے', 'error');
+            playSound('error');
+            return;
+        }
+    } else {
+        // مائیک بند کریں
+        localStream.getAudioTracks().forEach(track => {
+            track.enabled = !track.enabled;
+            console.log('Track', track.kind, 'enabled:', track.enabled);
+        });
+        
+        isVoiceEnabled = !isVoiceEnabled;
+        if (isVoiceEnabled) {
+            micBtn.innerHTML = '<i class="fas fa-microphone-slash"></i>';
+            micBtn.style.background = '#f44336';
+            voiceStatus.innerHTML = 'مائیک چالو 🎤';
+            voiceStatus.style.color = '#4CAF50';
+            showNotification('مائیک چالو', 'info');
+        } else {
+            micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+            micBtn.style.background = '#4CAF50';
+            voiceStatus.innerHTML = 'مائیک بند 🔇';
+            voiceStatus.style.color = '#f44336';
+            showNotification('مائیک بند', 'warning');
+        }
+        playSound('click');
+    }
+}
+
+// کال شروع/بند کریں
+async function toggleCall() {
+    const callBtn = document.getElementById('callToggleBtn');
+    const voiceStatus = document.getElementById('voiceStatus');
+    
+    if (!isOnlineMode || !gameRef) {
+        showNotification('آن لائن گیم میں کال کریں', 'error');
+        playSound('error');
+        return;
+    }
+    
+    if (!localStream) {
+        showNotification('پہلے مائیک چالو کریں', 'error');
+        playSound('error');
+        return;
+    }
+    
+    if (!isCallActive) {
+        // نیا کال شروع کریں
+        try {
+            await createPeerConnection();
+            
+            // آفر بنائیں
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            
+            // Firebase میں آفر بھیجیں
+            await gameRef.update({
+                voiceSignal: {
+                    type: 'offer',
+                    from: playerNumber,
+                    to: playerNumber === 1 ? 2 : 1,
+                    sdp: offer.sdp,
+                    timestamp: Date.now()
+                }
+            });
+            
+            isCallActive = true;
+            callBtn.innerHTML = '<i class="fas fa-phone-slash"></i>';
+            callBtn.style.background = '#f44336';
+            voiceStatus.innerHTML = 'کال جاری 📞';
+            voiceStatus.style.color = '#2196F3';
+            
+            showNotification('کال شروع ہو گئی', 'success');
+            playSound('mill');
+        } catch (error) {
+            console.error('کال شروع کرنے میں مسئلہ:', error);
+            showNotification('کال شروع نہیں ہو سکی', 'error');
+            playSound('error');
+        }
+    } else {
+        // کال بند کریں
+        endCall();
+        callBtn.innerHTML = '<i class="fas fa-phone"></i>';
+        callBtn.style.background = '#2196F3';
+        voiceStatus.innerHTML = 'وائس بند ہے';
+        voiceStatus.style.color = 'white';
+        
+        showNotification('کال بند ہو گئی', 'info');
+        playSound('click');
+    }
+}
+
+// Peer Connection بنائیں
+async function createPeerConnection() {
+    console.log('🔧 Creating peer connection...');
+    peerConnection = new RTCPeerConnection(iceServers);
+    
+    // Data Channel بنائیں (ٹیکسٹ میسجز کے لیے)
+    dataChannel = peerConnection.createDataChannel('gameData');
+    dataChannel.onopen = () => {
+        console.log('✅ Data Channel کھل گیا');
+    };
+    dataChannel.onmessage = (event) => {
+        console.log('📨 پیغام ملا:', event.data);
+    };
+    
+    // ✅ CRITICAL: Local Stream شامل کریں - بہتر طریقے سے
+    if (localStream) {
+        console.log('🎤 Adding local audio tracks...');
+        localStream.getTracks().forEach(track => {
+            console.log('Track added:', track.kind, track.enabled);
+            peerConnection.addTrack(track, localStream);
+        });
+    } else {
+        console.error('❌ No local stream available!');
+    }
+    
+    // ✅ Remote Stream کے لیے - بہتر handling
+    peerConnection.ontrack = (event) => {
+        console.log('🔊 Remote track received:', event.track.kind);
+        remoteStream = event.streams[0];
+        const remoteAudio = document.getElementById('remoteAudio');
+        remoteAudio.srcObject = remoteStream;
+        
+        // ✅ Make sure audio plays
+        remoteAudio.play().then(() => {
+            console.log('✅ Remote audio playing');
+        }).catch(err => {
+            console.error('❌ Remote audio play failed:', err);
+        });
+    };
+    
+    // ✅ ICE Candidates - بہتر logging
+    peerConnection.onicecandidate = (event) => {
+        if (event.candidate) {
+            console.log('🧊 ICE candidate found:', event.candidate.type);
+            if (gameRef) {
+                gameRef.update({
+                    voiceSignal: {
+                        type: 'ice-candidate',
+                        from: playerNumber,
+                        to: playerNumber === 1 ? 2 : 1,
+                        candidate: event.candidate.toJSON(),
+                        timestamp: Date.now()
+                    }
+                });
+            }
+        } else {
+            console.log('✅ All ICE candidates gathered');
+        }
+    };
+    
+    // ✅ ICE Connection State
+    peerConnection.oniceconnectionstatechange = () => {
+        console.log('🧊 ICE Connection State:', peerConnection.iceConnectionState);
+    };
+    
+    // ✅ Connection State
+    peerConnection.onconnectionstatechange = () => {
+        console.log('🔗 Connection state:', peerConnection.connectionState);
+        if (peerConnection.connectionState === 'connected') {
+            showNotification('آواز کنیکٹ ہو گئی! 🎧', 'success');
+        }
+        if (peerConnection.connectionState === 'disconnected' || 
+            peerConnection.connectionState === 'failed' || 
+            peerConnection.connectionState === 'closed') {
+            endCall();
+        }
+    };
+}
+
+// سگنل پروسیسنگ (Firebase سے)
+function setupVoiceSignalListener() {
+    if (!gameRef) return;
+    
+    gameRef.child('voiceSignal').on('value', (snapshot) => {
+        const signal = snapshot.val();
+        if (!signal) return;
+        
+        // صرف میرے لیے سگنل پروسیس کریں
+        if (signal.to !== playerNumber) return;
+        
+        processVoiceSignal(signal);
+    });
+}
+
+async function processVoiceSignal(signal) {
+    console.log('📡 Processing signal:', signal.type, 'from player', signal.from);
+    
+    if (!peerConnection) {
+        console.log('⚠️ No peer connection, creating one...');
+        await createPeerConnection();
+    }
+    
+    try {
+        switch (signal.type) {
+            case 'offer':
+                console.log('📥 Received offer');
+                await peerConnection.setRemoteDescription(new RTCSessionDescription({
+                    type: 'offer',
+                    sdp: signal.sdp
+                }));
+                
+                // Answer بنائیں
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                console.log('📤 Sending answer');
+                
+                // Firebase میں Answer بھیجیں
+                await gameRef.update({
+                    voiceSignal: {
+                        type: 'answer',
+                        from: playerNumber,
+                        to: signal.from,
+                        sdp: answer.sdp,
+                        timestamp: Date.now()
+                    }
+                });
+                
+                isCallActive = true;
+                updateVoiceUI(true);
+                showNotification(`کال موصول ہوئی 📞`, 'success');
+                playSound('place');
+                break;
+                
+            case 'answer':
+                console.log('📥 Received answer');
+                await peerConnection.setRemoteDescription(new RTCSessionDescription({
+                    type: 'answer',
+                    sdp: signal.sdp
+                }));
+                
+                isCallActive = true;
+                updateVoiceUI(true);
+                showNotification('کال جڑ گئی ✅', 'success');
+                playSound('mill');
+                break;
+                
+            case 'ice-candidate':
+                if (signal.candidate) {
+                    console.log('🧊 Adding ICE candidate');
+                    await peerConnection.addIceCandidate(new RTCIceCandidate(signal.candidate));
+                }
+                break;
+                
+            case 'hangup':
+                console.log('📴 Call ended by remote');
+                endCall();
+                showNotification(`${opponentName} نے کال بند کی`, 'info');
+                playSound('error');
+                break;
+        }
+    } catch (error) {
+        console.error('❌ سگنل پروسیسنگ میں مسئلہ:', error);
+        showNotification('وائس کنیکشن میں مسئلہ: ' + error.message, 'error');
+        playSound('error');
+    }
+}
+
+function updateVoiceUI(isActive) {
+    const callBtn = document.getElementById('callToggleBtn');
+    const voiceStatus = document.getElementById('voiceStatus');
+    
+    if (isActive) {
+        callBtn.innerHTML = '<i class="fas fa-phone-slash"></i>';
+        callBtn.style.background = '#f44336';
+        voiceStatus.innerHTML = 'کال جاری 📞';
+        voiceStatus.style.color = '#2196F3';
+        isCallActive = true;
+    } else {
+        callBtn.innerHTML = '<i class="fas fa-phone"></i>';
+        callBtn.style.background = '#2196F3';
+        voiceStatus.innerHTML = 'وائس بند ہے';
+        voiceStatus.style.color = 'white';
+        isCallActive = false;
+    }
+}
+
+// کال بند کریں
+function endCall() {
+    if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+    }
+    
+    if (dataChannel) {
+        dataChannel.close();
+        dataChannel = null;
+    }
+    
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+        localStream = null;
+    }
+    
+    if (remoteStream) {
+        remoteStream = null;
+        document.getElementById('remoteAudio').srcObject = null;
+    }
+    
+    // Firebase کو بتائیں کہ کال بند ہوئی
+    if (gameRef && isCallActive) {
+        gameRef.update({
+            voiceSignal: {
+                type: 'hangup',
+                from: playerNumber,
+                to: playerNumber === 1 ? 2 : 1,
+                timestamp: Date.now()
+            }
+        });
+    }
+    
+    updateVoiceUI(false);
+    isVoiceEnabled = false;
+    
+    // مائیک بٹن ری سیٹ کریں
+    const micBtn = document.getElementById('micToggleBtn');
+    micBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+    micBtn.style.background = '#4CAF50';
+}
+
+// یہ function ہٹا دیا گیا - اب original resetGame میں endCall() شامل ہے
+
+// Event Listeners سیٹ اپ کریں
+function setupVoiceEventListeners() {
+    document.getElementById('micToggleBtn').addEventListener('click', toggleMicrophone);
+    document.getElementById('callToggleBtn').addEventListener('click', toggleCall);
+}
+
+function onOnlineGameStart() {
+    const voiceHeaderBtn = document.getElementById('voiceHeaderBtn');
+    voiceHeaderBtn.style.display = 'flex';
+    
+    setupVoiceEventListeners();
+    setupVoiceSignalListener();
+    
+    showNotification('وائس چیٹ دستیاب ہے 🎧', 'info');
+}
+
+
+
+    </script>
+    <script>
+const SECURITY_CONFIG = {
+allowedDomains: [
+'zbproject.blogspot.com', // ✅ آپ کی domain
+'localhost', // Testing
+'127.0.0.1' // Local test
+],
+
+allowedUserAgents: [
+'appsgeyser',
+'AppsGeyser'
+],
+
+securityToken: 'ZBProject2024@Secure#XyZ789!'
+};
+
+function verifyDomain() {
+const currentDomain = window.location.hostname;
+const userAgent = navigator.userAgent.toLowerCase();
+
+console.log('Domain:', currentDomain);
+console.log('User Agent:', userAgent);
+
+const isDomainAllowed = SECURITY_CONFIG.allowedDomains.some(domain =>
+currentDomain.includes(domain)
+);
+
+const isAppGeyser = SECURITY_CONFIG.allowedUserAgents.some(agent =>
+userAgent.includes(agent.toLowerCase())
+);
+
+const isEmbedded = window !== window.top ||
+window.navigator.standalone === true ||
+window.matchMedia('(display-mode: standalone)').matches;
+
+return isDomainAllowed || isAppGeyser || isEmbedded;
+}
+
+function showError(message = null) {
+document.getElementById('loadingScreen').style.display = 'none';
+document.getElementById('gameContent').style.display = 'none';
+document.getElementById('errorScreen').style.display = 'block';
+
+if (message) {
+document.querySelector('#errorScreen p').textContent = message;
+}
+}
+
+function startGame() {
+document.getElementById('loadingScreen').style.display = 'none';
+document.getElementById('gameContent').style.display = 'block';
+}
+
+function initSecurity() {
+return new Promise((resolve, reject) => {
+setTimeout(() => {
+if (!verifyDomain()) {
+console.error('Unauthorized Domain');
+reject('Unauthorized Domain');
+return;
+}
+
+sessionStorage.setItem('gameAuth', SECURITY_CONFIG.securityToken);
+sessionStorage.setItem('authTime', Date.now());
+
+console.log('Security check passed!');
+resolve(true);
+}, 1000);
+});
+}
+
+function isAuthorized() {
+const token = sessionStorage.getItem('gameAuth');
+const authTime = sessionStorage.getItem('authTime');
+
+if (!token || token !== SECURITY_CONFIG.securityToken) {
+return false;
+}
+
+const now = Date.now();
+if (now - parseInt(authTime) > 3600000) {
+sessionStorage.removeItem('gameAuth');
+sessionStorage.removeItem('authTime');
+return false;
+}
+
+return true;
+}
+
+document.addEventListener('contextmenu', e => {
+e.preventDefault();
+return false;
+});
+
+document.addEventListener('keydown', e => {
+if (e.keyCode === 123 ||
+(e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) ||
+(e.ctrlKey && e.keyCode === 85)) {
+e.preventDefault();
+return false;
+}
+});
+
+window.addEventListener('DOMContentLoaded', async () => {
+try {
+await initSecurity();
+setTimeout(startGame, 500);
+} catch (error) {
+console.error('Security check failed:', error);
+showError();
+}
+});
+
+window.gameAuth = {
+isAuthorized: isAuthorized,
+getToken: () => SECURITY_CONFIG.securityToken
+};
+</script>
+</body>
+</html>
