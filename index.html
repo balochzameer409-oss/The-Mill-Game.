@@ -1359,23 +1359,26 @@ iframe[src*="appsgeyser"] {
     </div>
 
     <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
 <script>
         // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCWHbfqbNI1rt09OLo2Nw3IufgQG5MU6vM",
-            authDomain: "mill-game-online.firebaseapp.com",
-            databaseURL: "https://mill-game-online-default-rtdb.firebaseio.com",
-            projectId: "mill-game-online",
-            storageBucket: "mill-game-online.firebasestorage.app",
-            messagingSenderId: "187128179484",
-            appId: "1:187128179484:web:7bbe1c553fd43ab634e8d9",
-            measurementId: "G-SQEQE6N44S"
-        };
+     const firebaseConfig = {
+    apiKey: "AIzaSyCWHbfqbNI1rt09OLo2Nw3IufgQG5MU6vM",
+    authDomain: "mill-game-online.firebaseapp.com",
+    databaseURL: "https://mill-game-online-default-rtdb.firebaseio.com",
+    projectId: "mill-game-online",
+    storageBucket: "mill-game-online.firebasestorage.app",
+    messagingSenderId: "187128179484",
+    appId: "1:187128179484:web:7bbe1c553fd43ab634e8d9",
+    measurementId: "G-SQEQE6N44S"
+};
 
-       // Initialize Firebase - WITH SECURITY CHECK
+// 🔐 Firebase Initialize - WITH AUTHENTICATION
 let database = null;
+let currentUser = null;
+let isFirebaseReady = false;
 
 function initFirebase() {
     // Security check کریں
@@ -1385,11 +1388,45 @@ function initFirebase() {
         return;
     }
     
-    // اب Firebase initialize کریں
+    // Firebase initialize کریں
     firebase.initializeApp(firebaseConfig);
     database = firebase.database();
     
-    console.log('✅ Firebase initialized successfully');
+    console.log('✅ Firebase initialized');
+    
+    // 🔐 Authentication Setup - Anonymous Login
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            // ✅ User logged in successfully
+            currentUser = user;
+            isFirebaseReady = true;
+            console.log('✅ User authenticated! UID:', user.uid);
+            
+            // यहाँ notification दکھائیں (optional)
+            if (typeof showNotification === 'function') {
+                showNotification('آن لائن تیار ہے! ✅', 'success');
+            }
+            
+        } else {
+            // ❌ کوئی user نہیں - Automatic Anonymous Login کریں
+            console.log('🔐 Signing in anonymously...');
+            
+            firebase.auth().signInAnonymously()
+                .then(() => {
+                    console.log('🔐 Anonymous login successful!');
+                })
+                .catch((error) => {
+                    console.error('❌ Authentication error:', error);
+                    if (typeof showNotification === 'function') {
+                        showNotification('لاگ ان میں مسئلہ: ' + error.message, 'error');
+                    }
+                    // Retry after 3 seconds
+                    setTimeout(() => {
+                        firebase.auth().signInAnonymously();
+                    }, 3000);
+                });
+        }
+    });
 }
 
 // Game loaded ہونے پر Firebase initialize کریں
@@ -1400,7 +1437,6 @@ window.addEventListener('load', () => {
         }
     }, 1500);
 });
-
         // Game Variables
         let board = Array(24).fill(null);
         let currentPlayer = 1;
@@ -3131,7 +3167,8 @@ function onOnlineGameStart() {
 const SECURITY_CONFIG = {
 allowedDomains: [
 'balochzameer409-oss.github.io', // ✅ آپ کی domain
-'localhost',
+'localhost', // Testing
+'127.0.0.1' // Local test
 ],
 
 allowedUserAgents: [
